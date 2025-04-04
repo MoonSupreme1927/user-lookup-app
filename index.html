@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Lookup</title>
+</head>
+<body>
+  <input type="text" id="searchInput" placeholder="Enter name, email, or phone" />
+  <button onclick="searchUser()">Search</button>
+  <pre id="result"></pre>
+
+  <script>
+    function searchUser() {
+      const input = document.getElementById('searchInput').value.trim().toLowerCase();
+
+      fetch('users.json')
+        .then(response => response.json())
+        .then(data => {
+          const users = data.users;
+          let foundUser = null;
+
+          for (const key in users) {
+            const user = users[key];
+            if (
+              user.name.toLowerCase() === input ||
+              user.email.toLowerCase() === input ||
+              user.phone.toLowerCase() === input
+            ) {
+              foundUser = user;
+              break;
+            }
+          }
+
+          if (foundUser) {
+            document.getElementById('result').innerText = `
+Name: ${foundUser.name}
+Email: ${foundUser.email}
+Phone: ${foundUser.phone}`;
+          } else {
+            document.getElementById('result').innerText = "User not found.";
+          }
+        })
+        .catch(error => {
+          console.error('Error loading data:', error);
+          document.getElementById('result').innerText = "Error loading data.";
+        });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+
+{
+    "users": {
+        "user1": {
+            "name": "Billie Evans",
+            "email": "bje@gmail.com",
+            "password": "1234567890",
+            "phone": "1234567890"
+        },
+        "user2": {
+            "name": "John Doe",
+            "email": "",
+            "password": "1234567890",
+            "phone": "1234567890"
+        }
+    }
+}
