@@ -11,7 +11,7 @@ function App() {
     event.preventDefault();
     try {
       const response = await axios.get(
-        `https://user-lookup-app.onrender.com/api/users?search=${query}`,
+        axios.get(`${process.env.REACT_APP_API_URL}/api/users`),
       );
       setResults(response.data);
       setError(null);
