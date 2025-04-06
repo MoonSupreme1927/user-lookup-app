@@ -1,22 +1,32 @@
 const express = require('express');
 const fs = require('fs');
-const app = express();
 const cors = require('cors');
+const app = express();
 
 app.use(cors());
-app.use(users.json());
+app.use(express.json()); // ✅ fixed: parse JSON bodies
 
-const data = JSON.parse(fs.readFileSync('users.json', 'utf-8')).users;
+// ✅ Load data safely
+let data = [];
+try {
+  const file = fs.readFileSync('users.json', 'utf-8');
+  data = JSON.parse(file).users || [];
+} catch (err) {
+  console.error('Error reading users.json:', err);
+}
 
 app.get('/search', (req, res) => {
-  const { query } = req.query;
-  const results = Object.values(data).filter(user =>
-    user.name.toLowerCase().includes(query.toLowerCase()) ||
-    user.email.toLowerCase().includes(query.toLowerCase()) ||
+  const query = (req.query.query || '').toLowerCase();
+
+  const results = data.filter(user =>
+    user.name.toLowerCase().includes(query) ||
+    user.email.toLowerCase().includes(query) ||
     user.phone.includes(query)
   );
+
   res.json(results);
 });
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+
