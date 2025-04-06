@@ -4,13 +4,14 @@ const cors = require('cors');
 const app = express();
 
 app.use(cors());
-app.use(express.json()); // ✅ fixed: parse JSON bodies
+app.use(express.json());
 
-// ✅ Load data safely
+// Load user data as an array
 let data = [];
 try {
   const file = fs.readFileSync('users.json', 'utf-8');
-  data = JSON.parse(file).users || [];
+  const parsed = JSON.parse(file);
+  data = parsed.users || [];
 } catch (err) {
   console.error('Error reading users.json:', err);
 }
@@ -27,6 +28,7 @@ app.get('/search', (req, res) => {
   res.json(results);
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+
 
