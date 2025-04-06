@@ -11,7 +11,7 @@ function App() {
     event.preventDefault();
     try {
       const response = await axios.get(
-        axios.get(`${process.env.REACT_APP_API_URL}/api/users`),
+        axios.get(`${process.env.REACT_APP_API_URL}/api/users/search?query=' + query`),
       );
       setResults(response.data);
       setError(null);
