@@ -38,6 +38,8 @@ function App() {
           onChange={(e) => setQuery(e.target.value)}
         />
         <button type="submit">Search</button>
+        <button className="btn btn-primary">Search</button>
+        <button className="btn btn-secondary" onClick={() => setQuery('')}>Clear</button>
       </form>
 
       {loading && <div className="spinner"></div>}
@@ -55,6 +57,10 @@ function App() {
         query && !loading && !error && <p className="error">No results found.</p>
       )}
     </div>
+  );
+}
+
+export default App;
   );
 }
 
