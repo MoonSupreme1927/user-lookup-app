@@ -37,8 +37,7 @@ function App() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <button type="submit">Search</button>
-        <button className="btn btn-primary">Search</button>
+        <button type="submit" className="btn btn-primary">Search</button>
         <button className="btn btn-secondary" onClick={() => setQuery('')}>Clear</button>
       </form>
 
