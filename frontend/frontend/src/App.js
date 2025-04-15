@@ -4,7 +4,6 @@ import './App.css';
 
 function App() {
   const [loading, setLoading] = useState(false);
-  const [userData, setUserData] = useState(null);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
@@ -12,11 +11,11 @@ function App() {
   const handleSearch = async (event) => {
     event.preventDefault();
     setError(null);
-    setLoading(true); // 👈 Start loading
-  
+    setLoading(true);
+
     const apiUrl = `https://user-lookup-app.onrender.com/search?query=${query}`;
     console.log('Calling API:', apiUrl);
-  
+
     try {
       const response = await axios.get(apiUrl);
       setResults(response.data);
@@ -24,10 +23,9 @@ function App() {
       console.error('API call failed:', err);
       setError('Error loading data');
     } finally {
-      setLoading(false); // 👈 Stop loading
+      setLoading(false);
     }
   };
-  
 
   return (
     <div className="App">
@@ -42,13 +40,7 @@ function App() {
         <button type="submit">Search</button>
       </form>
 
-      {loading && <p className="loading">Loading...</p>} {/* Loading indicator */}
       {loading && <div className="spinner"></div>}
-      {/* Spinner for loading state */}
-      {error && <div className="error">Error: {error}</div>} {/* Error message */}
-      {/* Display error message if exists */}
-      {error && <div className="error">{error}</div>}
-      {/* Display error message if exists */} 
 
       {error && <p className="error">{error}</p>}
 
@@ -61,7 +53,7 @@ function App() {
           </div>
         ))
       ) : (
-        query && !error && <p className="error">No results found.</p>
+        query && !loading && !error && <p className="error">No results found.</p>
       )}
     </div>
   );
