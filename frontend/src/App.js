@@ -28,6 +28,7 @@ function App() {
   };
 
   return (
+    <div className="banner">User Lookup Tool</div>
     <div className="App">
       <h1>User Lookup</h1>
       <form onSubmit={handleSearch}>
