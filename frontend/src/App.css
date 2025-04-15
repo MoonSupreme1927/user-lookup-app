@@ -3,8 +3,13 @@ body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #fefce8;
-  cursor: url('https://cur.cursors-4u.net/animals/ani-11/ani1044.cur'), auto;
-}
+  cursor: url('/spongebob-pointer-32x32.png'), auto;
+  background-image: url('/spongebob-background.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  }
+  
+
 
 .banner {
   position: fixed;
@@ -124,9 +129,7 @@ button:hover {
   font-weight: bold;
 }
 
-body {
-  cursor: url('/shark.cur'), auto;
-}
+
 
 
 
