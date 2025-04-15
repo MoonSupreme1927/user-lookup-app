@@ -124,4 +124,9 @@ button:hover {
   font-weight: bold;
 }
 
+body {
+  cursor: url('/shark.cur'), auto;
+}
+
+
 
