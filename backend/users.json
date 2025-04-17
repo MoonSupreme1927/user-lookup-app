@@ -11,6 +11,20 @@
         "email": "john@example.com",
         "password": "1234567890",
         "phone": "9876543210"
+      },
+
+      {
+        "name": "Jane Smith",
+        "email": "j@gmail.com",
+        "password": "1234567890",
+        "phone": "1234567898"
+      },
+
+      {
+        "name": "Alice Johnson",
+        "email": "al@gmail.com",
+        "password": "1234567890",
+        "phone": "1234567897"
       }
     ]
   }
