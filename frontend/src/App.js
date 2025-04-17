@@ -9,6 +9,7 @@ function App() {
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
   const [newUser, setNewUser] = useState({ name: '', email: '', phone: '' });
+  const [darkMode, setDarkMode] = useState(false);
 
   const handleSearch = async (event) => {
     event.preventDefault();
@@ -31,13 +32,9 @@ function App() {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        'https://user-lookup-app.onrender.com/add',
-        newUser
-      );
+      const response = await axios.post('https://user-lookup-app.onrender.com/add', newUser);
       console.log(response.data);
 
-      // Refresh user list with new user
       setQuery(newUser.name);
       const searchResponse = await axios.get(`https://user-lookup-app.onrender.com/search?query=${newUser.name}`);
       setResults(searchResponse.data);
@@ -57,27 +54,23 @@ function App() {
     setError(null);
   };
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setNewUser((prevUser) => ({
-      ...prevUser,
-      [name]: value,
-    }));
-  };
-
   return (
     <>
-      <div className="banner">User Lookup Tool</div>
-  
+      <div className="banner">
+        User Lookup Tool
+        <button className="dark-toggle" onClick={() => setDarkMode(!darkMode)}>
+          {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+        </button>
+      </div>
+
       {loading && (
         <div className="overlay">
           <div className="spinner"></div>
         </div>
       )}
-  
-      <div className="App">
+
+      <div className={darkMode ? 'App dark' : 'App'}>
         <div className="form-container">
-          {/* Search User Section */}
           <div className="form-section">
             <h2>Search User</h2>
             <form onSubmit={handleSearch}>
@@ -91,45 +84,32 @@ function App() {
               <button type="button" className="btn-secondary" onClick={handleClear}>Clear</button>
             </form>
           </div>
-  
-          {/* Add User Section */}
+
           <div className="form-section">
             <h2>Add a User</h2>
             <form onSubmit={handleAddUser}>
-              <input
-                type="text"
-                placeholder="Name"
-                value={newUser.name}
-                onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                required
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                value={newUser.email}
-                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                required
-              />
-              <input
-                type="text"
-                placeholder="Phone"
-                value={newUser.phone}
-                onChange={(e) => setNewUser({ ...newUser, phone: e.target.value })}
-                required
-              />
+              <input type="text" placeholder="Name" value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value })} required />
+              <input type="email" placeholder="Email" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} required />
+              <input type="text" placeholder="Phone" value={newUser.phone} onChange={(e) => setNewUser({ ...newUser, phone: e.target.value })} required />
               <button type="submit" className="btn-primary" disabled={loading}>Add User</button>
             </form>
           </div>
         </div>
-  
-        {/* Results */}
+
         {error && <p className="error">{error}</p>}
+
         {results.length > 0 ? (
           results.map((user, index) => (
             <div key={index} className="user-card">
               <p><strong>Name:</strong> {user.name}</p>
               <p><strong>Email:</strong> {user.email}</p>
               <p><strong>Phone:</strong> {user.phone}</p>
+              <button
+                className="btn-secondary"
+                onClick={() => window.location.href = `/users/${user._id}`}
+              >
+                View User Page
+              </button>
             </div>
           ))
         ) : (
@@ -138,9 +118,9 @@ function App() {
       </div>
     </>
   );
-  
 }
 
 export default App;
+
 
 
