@@ -68,56 +68,62 @@ function App() {
   return (
     <>
       <div className="banner">User Lookup Tool</div>
-
+  
       {loading && (
         <div className="overlay">
           <div className="spinner"></div>
         </div>
       )}
-
+  
       <div className="App">
-        <form onSubmit={handleSearch}>
-          <input
-            type="text"
-            placeholder="Search by name, email, or phone"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <button type="submit" className="btn-primary" disabled={loading}>Search</button>
-          <button type="button" className="btn-secondary" onClick={handleClear}>Clear</button>
-        </form>
-
-        <h2>Add a User</h2>
-        <form onSubmit={handleAddUser}>
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={newUser.name}
-            onChange={handleInputChange}
-            required
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={newUser.email}
-            onChange={handleInputChange}
-            required
-          />
-          <input
-            type="text"
-            name="phone"
-            placeholder="Phone"
-            value={newUser.phone}
-            onChange={handleInputChange}
-            required
-          />
-          <button type="submit" className="btn-primary" disabled={loading}>Add User</button>
-        </form>
-
+        <div className="form-container">
+          {/* Search User Section */}
+          <div className="form-section">
+            <h2>Search User</h2>
+            <form onSubmit={handleSearch}>
+              <input
+                type="text"
+                placeholder="Search by name, email, or phone"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <button type="submit" className="btn-primary" disabled={loading}>Search</button>
+              <button type="button" className="btn-secondary" onClick={handleClear}>Clear</button>
+            </form>
+          </div>
+  
+          {/* Add User Section */}
+          <div className="form-section">
+            <h2>Add a User</h2>
+            <form onSubmit={handleAddUser}>
+              <input
+                type="text"
+                placeholder="Name"
+                value={newUser.name}
+                onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                required
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                value={newUser.email}
+                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Phone"
+                value={newUser.phone}
+                onChange={(e) => setNewUser({ ...newUser, phone: e.target.value })}
+                required
+              />
+              <button type="submit" className="btn-primary" disabled={loading}>Add User</button>
+            </form>
+          </div>
+        </div>
+  
+        {/* Results */}
         {error && <p className="error">{error}</p>}
-
         {results.length > 0 ? (
           results.map((user, index) => (
             <div key={index} className="user-card">
@@ -132,6 +138,7 @@ function App() {
       </div>
     </>
   );
+  
 }
 
 export default App;
