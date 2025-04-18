@@ -8,6 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 const User = require('./models/User'); // Make sure this path is correct
+const x = require('side-channel-map');
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
@@ -45,6 +46,28 @@ app.post('/add', async (req, res) => {
   } catch (err) {
     console.error('Add user failed:', err);
     res.status(500).json({ error: 'Failed to add user' });
+  }
+});
+
+//Login route 
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (user.password !== password) {
+      return res.status(401).json({ error: 'Invalid password' });
+    }
+
+    res.status(200).json({ message: 'Login successful', user });
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
