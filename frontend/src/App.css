@@ -53,6 +53,13 @@ body {
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   animation: fadeIn 0.5s ease-in-out;
+  border: 1px solid #ddd;
+}
+
+.form-section h2 {
+  margin-top: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #eee;
 }
 
 form input {
@@ -179,6 +186,7 @@ form button {
   background-color: #1e1e1e;
   color: #eaeaea;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+  border: 1px solid #333;
 }
 
 .App.dark input,

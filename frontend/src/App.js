@@ -56,7 +56,7 @@ function App() {
     <div className={darkMode ? 'App dark' : 'App'}>
       <div className="form-container">
         <div className="form-section">
-          <h2>Search User</h2>
+          <h2>🔍 Search User</h2>
           <form onSubmit={handleSearch}>
             <input
               type="text"
@@ -70,7 +70,7 @@ function App() {
         </div>
 
         <div className="form-section">
-          <h2>Add a User</h2>
+          <h2>➕ Add a User</h2>
           <form onSubmit={handleAddUser}>
             <input type="text" placeholder="Name" value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value })} required />
             <input type="email" placeholder="Email" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} required />
