@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 import { Routes, Route, useNavigate } from 'react-router-dom';
@@ -122,7 +122,7 @@ function App() {
         <Route path="/users/:id" element={<UserDetail />} />
       </Routes>
     </>
-  );
+  );  
 }
 
 export default App;
