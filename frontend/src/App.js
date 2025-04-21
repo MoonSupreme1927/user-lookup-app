@@ -5,6 +5,7 @@ import './App.css';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import UserDetail from './UserDetail';
 
+
 function App() {
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState('');

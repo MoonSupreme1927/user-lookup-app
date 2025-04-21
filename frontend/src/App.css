@@ -200,6 +200,31 @@ form button {
   background-color: #444;
 }
 
+.detail-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin: 2rem auto;
+  max-width: 900px;
+  justify-content: space-between;
+}
+
+.contact-card, .skills-card {
+  flex: 1 1 45%;
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.App.dark .contact-card,
+.App.dark .skills-card {
+  background-color: #1e1e1e;
+  color: white;
+  border: 1px solid #444;
+}
+
+
 
 
 

@@ -2,7 +2,8 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './Home';
-import UserDetail from './UserDetail';import Login from './Login';
+import UserDetail from './UserDetail';
+import Login from './Login';
 
 const AppRoutes = (props) => (
   <Routes>

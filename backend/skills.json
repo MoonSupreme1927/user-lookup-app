@@ -1,0 +1,44 @@
+[
+    {
+      "userId": "123",
+      "skills": ["JavaScript", "React", "MongoDB"]
+    },
+    {
+      "userId": "456",
+      "skills": ["Python", "Django", "Pandas"]
+    },
+
+    {
+      "userId": "789",
+      "skills": ["Java", "Spring", "Hibernate"]
+    },
+    {
+      "userId": "101",
+      "skills": ["C#", ".NET", "SQL Server"]
+    },
+    {
+      "userId": "112",
+      "skills": ["Ruby", "Rails", "PostgreSQL"]
+    },
+    {
+      "userId": "131",
+      "skills": ["PHP", "Laravel", "MySQL"]
+    },
+    {
+      "userId": "415",
+      "skills": ["Swift", "iOS", "Xcode"]
+    },
+    {
+      "userId": "161",
+      "skills": ["Kotlin", "Android", "Gradle"]
+    },
+    {
+      "userId": "718",
+      "skills": ["Go", "Gin", "Gorm"]
+    },
+    {
+      "userId": "192",
+      "skills": ["Rust", "Rocket", "Diesel"]
+    }
+  ]
+  
