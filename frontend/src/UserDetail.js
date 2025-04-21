@@ -13,7 +13,7 @@ function UserDetail() {
   useEffect(() => {
     const fetchUserAndSkills = async () => {
       try {
-        const response = await axios.get(`https://user-lookup-app.onrender.com/users/${id}`);
+        const response = await axios.get(`https://user-lookup-app.onrender.com/users/${_id}`);
         setUser(response.data);
 
         const userSkills = skillsData.find((entry) => entry.userId === id);
@@ -23,6 +23,8 @@ function UserDetail() {
       } finally {
         setLoading(false);
       }
+      console.log('User:', user);
+      console.log('Skills:', skills);
     };
 
     fetchUserAndSkills();

@@ -7,7 +7,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const User = require('./models/User'); // Make sure this path is correct
+const User = require('./models/User'); // Import User model
+const bcrypt = require('bcrypt'); // For password hashing
 const x = require('side-channel-map');
 
 // MongoDB connection
@@ -72,16 +73,19 @@ app.post('/login', async (req, res) => {
 });
 
 // Get single user by ID
-app.get('/user/:id', async (req, res) => {
+app.get('/users/:id', async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
     res.json(user);
   } catch (err) {
     console.error('Error fetching user:', err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 // Server
 const PORT = process.env.PORT || 3001;

@@ -1,44 +1,24 @@
 [
     {
-      "userId": "123",
+      "userId": "68007d089cc191910103177c",
       "skills": ["JavaScript", "React", "MongoDB"]
     },
     {
-      "userId": "456",
+      "userId": "68007d089cc191910103177d",
       "skills": ["Python", "Django", "Pandas"]
     },
 
     {
-      "userId": "789",
+      "userId": "68007d089cc191910103177e",
       "skills": ["Java", "Spring", "Hibernate"]
     },
     {
-      "userId": "101",
+      "userId": "68007d089cc191910103177f",
       "skills": ["C#", ".NET", "SQL Server"]
     },
     {
-      "userId": "112",
+      "userId": "168007d26b110abcb12eaf27812",
       "skills": ["Ruby", "Rails", "PostgreSQL"]
-    },
-    {
-      "userId": "131",
-      "skills": ["PHP", "Laravel", "MySQL"]
-    },
-    {
-      "userId": "415",
-      "skills": ["Swift", "iOS", "Xcode"]
-    },
-    {
-      "userId": "161",
-      "skills": ["Kotlin", "Android", "Gradle"]
-    },
-    {
-      "userId": "718",
-      "skills": ["Go", "Gin", "Gorm"]
-    },
-    {
-      "userId": "192",
-      "skills": ["Rust", "Rocket", "Diesel"]
     }
+    
   ]
-  
