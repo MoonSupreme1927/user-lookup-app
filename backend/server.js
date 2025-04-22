@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
 const app = express();
@@ -86,6 +86,8 @@ app.post('/add', async (req, res) => {
     console.error('Add user failed:', err);
     res.status(500).json({ error: 'Failed to add user' });
   }
+  const existingUser = await User.findOne({ email });
+if (existingUser) return res.status(409).json({ error: 'User already exists' });
 });
 
 
