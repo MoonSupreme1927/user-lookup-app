@@ -1,39 +1,65 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import skillsData from './skills.json'; // Make sure this file exists
 
 function UserDetail() {
   const { id } = useParams();
   const [user, setUser] = useState(null);
   const [skills, setSkills] = useState([]);
+  const [newSkill, setNewSkill] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetch user + skills
   useEffect(() => {
-    console.log('Fetching user with ID:', id);
-
-    const fetchUser = async () => {
+    const fetchUserAndSkills = async () => {
       try {
-        const response = await axios.get(`https://user-lookup-app.onrender.com/users/${id}`);
-        console.log('User found:', response.data);
-        setUser(response.data);
+        const userRes = await axios.get(`https://user-lookup-app.onrender.com/users/${id}`);
+        setUser(userRes.data);
 
-        // Match skills
-        const userSkills = skillsData.find((entry) => entry.userId === id);
-        setSkills(userSkills ? userSkills.skills : []);
+        const skillRes = await axios.get(`https://user-lookup-app.onrender.com/skills/${id}`);
+        setSkills(skillRes.data.skills || []);
       } catch (err) {
-        console.error('Fetch error:', err);
+        console.error(err);
         setError('Failed to fetch user details');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUser();
+    fetchUserAndSkills();
   }, [id]);
 
-  if (loading) return <p>Loading user details...</p>;
+  const handleAddSkill = async () => {
+    if (!newSkill.trim()) return;
+    if (skills.includes(newSkill.trim())) {
+      setNewSkill('');
+      return;
+    }
+
+    try {
+      const response = await axios.post(`https://user-lookup-app.onrender.com/skills/${id}`, {
+        skill: newSkill.trim(),
+      });
+      setSkills(response.data.skills);
+      setNewSkill('');
+    } catch (err) {
+      console.error('Failed to add skill:', err);
+    }
+  };
+
+  const handleRemoveSkill = async (skillToRemove) => {
+    try {
+      const response = await axios.delete(
+        `https://user-lookup-app.onrender.com/skills/${id}/${skillToRemove}`
+      );
+      setSkills(response.data.skills);
+    } catch (err) {
+      console.error('Failed to remove skill:', err);
+    }
+  };
+
+  if (loading) return <p>Loading...</p>;
   if (error) return <p className="error">{error}</p>;
   if (!user) return <p>No user found.</p>;
 
@@ -53,13 +79,26 @@ function UserDetail() {
           <h2>💼 Skills</h2>
           {skills.length > 0 ? (
             <ul>
-              {skills.map((skill, index) => (
-                <li key={index}>✅ {skill}</li>
+              {skills.map((skill, idx) => (
+                <li key={idx}>
+                  {skill}
+                  <button onClick={() => handleRemoveSkill(skill)}>❌</button>
+                </li>
               ))}
             </ul>
           ) : (
-            <p>No skills listed for this user.</p>
+            <p>No skills listed.</p>
           )}
+
+          <div className="add-skill-form">
+            <input
+              type="text"
+              placeholder="Add a new skill"
+              value={newSkill}
+              onChange={(e) => setNewSkill(e.target.value)}
+            />
+            <button onClick={handleAddSkill}>➕ Add</button>
+          </div>
         </div>
       </div>
     </div>
@@ -67,3 +106,5 @@ function UserDetail() {
 }
 
 export default UserDetail;
+// Compare this snippet from frontend/src/App.js: 
+// import React, { useState } from 'react';

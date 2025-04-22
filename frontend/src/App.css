@@ -224,6 +224,50 @@ form button {
   border: 1px solid #444;
 }
 
+.detail-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 2rem auto;
+  max-width: 900px;
+  gap: 2rem;
+}
+
+.contact-card,
+.skills-card {
+  flex: 1 1 45%;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.skills-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.skills-card li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  background: #f5f5f5;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+}
+
+.add-skill-form {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.add-skill-form input {
+  flex: 1;
+  padding: 0.5rem;
+}
+
+
 
 
 
