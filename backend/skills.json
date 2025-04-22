@@ -1,0 +1,90 @@
+[
+  {
+    "userId": "68007d089cc191910103177f",
+    "skills": [
+      "Flask",
+      "Spring Boot"
+    ]
+  },
+  {
+    "userId": "68007d089cc191910103177c",
+    "skills": [
+      "Ruby",
+      "Spring Boot",
+      "Node.js",
+      "Java"
+    ]
+  },
+  {
+    "userId": "68007d089cc191910103177d",
+    "skills": [
+      "C#",
+      "Node.js"
+    ]
+  },
+  {
+    "userId": "68007d089cc191910103177e",
+    "skills": [
+      "Hibernate",
+      "JavaScript",
+      "Ruby"
+    ]
+  },
+  {
+    "userId": "68007d26b110abcb12eaf278",
+    "skills": [
+      "Hibernate",
+      "JavaScript",
+      "Ruby",
+      "Flask"
+    ]
+  },
+  {
+    "userId": "6801ceb2bb15e0754ca6e791",
+    "skills": [
+      "MongoDB",
+      "PostgreSQL",
+      "SQL Server"
+    ]
+  },
+  {
+    "userId": "6802bc937336261150b0d4ed",
+    "skills": [
+      "Flask",
+      "Spring Boot"
+    ]
+  },
+  {
+    "userId": "68044c159e2bb78a7a603885",
+    "skills": [
+      "React",
+      "Spring Boot",
+      "Flask",
+      "PostgreSQL"
+    ]
+  },
+  {
+    "userId": "68044c889e2bb78a7a603889",
+    "skills": [
+      "PostgreSQL",
+      "Flask",
+      "Ruby"
+    ]
+  },
+  {
+    "userId": "68044ca99e2bb78a7a60388d",
+    "skills": [
+      ".NET",
+      "Ruby"
+    ]
+  },
+  {
+    "userId": "6805b5a5803a81351a8585c9",
+    "skills": [
+      "PostgreSQL",
+      "Spring Boot",
+      "Rails",
+      "C#"
+    ]
+  }
+]

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import skillsData from './skills.json'; // 👈 import your local JSON file
+import skillsData from './skills.json'; // Make sure this file exists
 
 function UserDetail() {
   const { id } = useParams();
@@ -11,33 +11,36 @@ function UserDetail() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchUserAndSkills = async () => {
+    console.log('Fetching user with ID:', id);
+
+    const fetchUser = async () => {
       try {
-        const response = await axios.get(`https://user-lookup-app.onrender.com/users/${_id}`);
+        const response = await axios.get(`https://user-lookup-app.onrender.com/users/${id}`);
+        console.log('User found:', response.data);
         setUser(response.data);
 
+        // Match skills
         const userSkills = skillsData.find((entry) => entry.userId === id);
         setSkills(userSkills ? userSkills.skills : []);
       } catch (err) {
+        console.error('Fetch error:', err);
         setError('Failed to fetch user details');
       } finally {
         setLoading(false);
       }
-      console.log('User:', user);
-      console.log('Skills:', skills);
     };
 
-    fetchUserAndSkills();
+    fetchUser();
   }, [id]);
 
   if (loading) return <p>Loading user details...</p>;
-  if (error) return <p>{error}</p>;
+  if (error) return <p className="error">{error}</p>;
   if (!user) return <p>No user found.</p>;
 
   return (
     <div className="App">
       <div className="detail-container">
-        {/* Contact Card */}
+        {/* Contact Info */}
         <div className="contact-card">
           <h2>👤 Contact Info</h2>
           <p><strong>Name:</strong> {user.name}</p>
@@ -64,4 +67,3 @@ function UserDetail() {
 }
 
 export default UserDetail;
-
