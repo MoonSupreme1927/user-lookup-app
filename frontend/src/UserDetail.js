@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
+
 
 function UserDetail() {
   const { id } = useParams();
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+  const isOwner = loggedInUser?._id === id; // Check if the logged-in user is the owner of the profile
   const [user, setUser] = useState(null);
   const [skills, setSkills] = useState([]);
   const [newSkill, setNewSkill] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
 
   // Fetch user + skills
   useEffect(() => {
@@ -74,6 +80,15 @@ function UserDetail() {
           <p><strong>Phone:</strong> {user.phone}</p>
         </div>
 
+      <button
+         className="btn-secondary"
+         onClick={() => navigate('/')}
+         style={{ marginBottom: '1rem' }}
+      >
+        ⬅️ Back to Search
+      </button>
+
+
         {/* Skills Section */}
         <div className="skills-card">
           <h2>💼 Skills</h2>
@@ -82,14 +97,16 @@ function UserDetail() {
               {skills.map((skill, idx) => (
                 <li key={idx}>
                   {skill}
+                  {isOwner && (
                   <button onClick={() => handleRemoveSkill(skill)}>❌</button>
+                  )}
                 </li>
               ))}
             </ul>
           ) : (
             <p>No skills listed.</p>
           )}
-
+          {isOwner && (
           <div className="add-skill-form">
             <input
               type="text"
@@ -99,6 +116,7 @@ function UserDetail() {
             />
             <button onClick={handleAddSkill}>➕ Add</button>
           </div>
+          )}
         </div>
       </div>
     </div>

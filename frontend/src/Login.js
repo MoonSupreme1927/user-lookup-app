@@ -48,6 +48,8 @@ const Login = ({ navigate }) => {
       </div>
     </div>
   );
+  localStorage.setItem('loggedInUser', JSON.stringify(response.data.user));
+  
 };
 
 export default Login;
