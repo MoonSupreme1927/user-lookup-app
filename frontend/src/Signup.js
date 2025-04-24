@@ -82,4 +82,3 @@ export default Signup;
 import './App.css';
 await newUser.save();
 await new Skill({ userId: newUser._id, skills: [] }).save();
-import { useState } from 'react';
