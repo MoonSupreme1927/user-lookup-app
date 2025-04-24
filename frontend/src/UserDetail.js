@@ -2,19 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-
-
 function UserDetail() {
   const { id } = useParams();
-  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-  const isOwner = loggedInUser?._id === id; // Check if the logged-in user is the owner of the profile
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [skills, setSkills] = useState([]);
   const [newSkill, setNewSkill] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+  const isOwner = loggedInUser?._id === id;
 
   // Fetch user + skills
   useEffect(() => {
@@ -37,16 +35,17 @@ function UserDetail() {
   }, [id]);
 
   const handleAddSkill = async () => {
-    if (!newSkill.trim()) return;
-    if (skills.includes(newSkill.trim())) {
+    const trimmed = newSkill.trim();
+    if (!trimmed || skills.includes(trimmed)) {
       setNewSkill('');
       return;
     }
 
     try {
-      const response = await axios.post(`https://user-lookup-app.onrender.com/skills/${id}`, {
-        skill: newSkill.trim(),
-      });
+      const response = await axios.post(
+        `https://user-lookup-app.onrender.com/skills/${id}`,
+        { skill: trimmed }
+      );
       setSkills(response.data.skills);
       setNewSkill('');
     } catch (err) {
@@ -72,6 +71,17 @@ function UserDetail() {
   return (
     <div className="App">
       <div className="detail-container">
+        <div style={{ width: '100%' }}>
+          <h1>User Profile</h1>
+          <button
+            className="btn-secondary"
+            onClick={() => navigate('/')}
+            style={{ marginBottom: '1rem' }}
+          >
+            ⬅️ Back to Search
+          </button>
+        </div>
+
         {/* Contact Info */}
         <div className="contact-card">
           <h2>👤 Contact Info</h2>
@@ -79,15 +89,6 @@ function UserDetail() {
           <p><strong>Email:</strong> {user.email}</p>
           <p><strong>Phone:</strong> {user.phone}</p>
         </div>
-
-      <button
-         className="btn-secondary"
-         onClick={() => navigate('/')}
-         style={{ marginBottom: '1rem' }}
-      >
-        ⬅️ Back to Search
-      </button>
-
 
         {/* Skills Section */}
         <div className="skills-card">
@@ -98,7 +99,7 @@ function UserDetail() {
                 <li key={idx}>
                   {skill}
                   {isOwner && (
-                  <button onClick={() => handleRemoveSkill(skill)}>❌</button>
+                    <button onClick={() => handleRemoveSkill(skill)}>❌</button>
                   )}
                 </li>
               ))}
@@ -106,16 +107,17 @@ function UserDetail() {
           ) : (
             <p>No skills listed.</p>
           )}
+
           {isOwner && (
-          <div className="add-skill-form">
-            <input
-              type="text"
-              placeholder="Add a new skill"
-              value={newSkill}
-              onChange={(e) => setNewSkill(e.target.value)}
-            />
-            <button onClick={handleAddSkill}>➕ Add</button>
-          </div>
+            <div className="add-skill-form">
+              <input
+                type="text"
+                placeholder="Add a new skill"
+                value={newSkill}
+                onChange={(e) => setNewSkill(e.target.value)}
+              />
+              <button onClick={handleAddSkill}>➕ Add</button>
+            </div>
           )}
         </div>
       </div>
@@ -124,5 +126,6 @@ function UserDetail() {
 }
 
 export default UserDetail;
+
 // Compare this snippet from frontend/src/App.js: 
 // import React, { useState } from 'react';
