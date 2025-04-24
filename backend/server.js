@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const authController = require('./controllers/authController'); 
 require('dotenv').config();
 
 // 🛠️ Models
@@ -71,7 +72,7 @@ app.get('/search', async (req, res) => {
 });
 
 // Forgot Password Route (Send reset link via email)
-app.post('/forgot-password', async (req, res) => {
+app.post('/forgot-password',authController.forgotPassword, async (req, res) => {
   const { email } = req.body;
 
   // Check if user exists
@@ -139,7 +140,7 @@ app.post('/forgot-password', async (req, res) => {
 });
 
 // Reset Password Route (Update password using the reset token)
-app.post('/reset-password/:token', async (req, res) => {
+app.post('/reset-password/:token', authController.resetPassword, async (req, res) => {
   const { token } = req.params;
   const { newPassword } = req.body;
 
