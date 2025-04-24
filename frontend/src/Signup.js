@@ -81,3 +81,7 @@ function Signup() {
 export default Signup;
 import './App.css';
 import { useEffect } from 'react';
+await newUser.save();
+await new Skill({ userId: newUser._id, skills: [] }).save();
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';

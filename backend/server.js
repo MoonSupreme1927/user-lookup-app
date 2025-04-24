@@ -1,25 +1,30 @@
+// 📦 Dependencies
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
+const auth = require('./middleware/auth');
+const jwt = require('jsonwebtoken');
+const path = require('path');
 
+// 🛠️ Models
+const User = require('./models/User');
+const Skill = require('./models/Skill');
+
+// 🚀 App Setup
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const User = require('./models/User');
-const Skill = require('./models/Skill');
-
-// Connect to MongoDB
+// 🌐 Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => console.log('✅ MongoDB connected'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
-
-// 🔐 Signup (with hashed password)
+// 📝 Signup Route - hash password and store user
 app.post('/signup', async (req, res) => {
   try {
     const { name, email, phone, password } = req.body;
@@ -36,8 +41,7 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-
-// 🔐 Login (with password check)
+// 🔐 Login Route - verify password
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -47,7 +51,16 @@ app.post('/login', async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ error: 'Invalid password' });
 
-    res.status(200).json({ message: 'Login successful', user });
+    // ✅ Generate token
+    const token = jwt.sign(
+      { _id: user._id, email: user.email, role: user.role || 'user' },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
+    // ✅ Send token with user data
+    res.status(200).json({ message: 'Login successful', user, token });
+
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Server error' });
@@ -55,7 +68,7 @@ app.post('/login', async (req, res) => {
 });
 
 
-// 🔍 Search users
+// 🔍 Search Users
 app.get('/search', async (req, res) => {
   const { query } = req.query;
   if (!query) return res.json([]);
@@ -74,11 +87,14 @@ app.get('/search', async (req, res) => {
   }
 });
 
-
-// ➕ Add user (without auth for now)
+// ➕ Add New User (unauthenticated)
 app.post('/add', async (req, res) => {
   try {
     const { name, email, phone } = req.body;
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(409).json({ error: 'User already exists' });
+
     const newUser = new User({ name, email, phone });
     await newUser.save();
     res.status(201).json({ message: 'User added successfully!' });
@@ -86,12 +102,9 @@ app.post('/add', async (req, res) => {
     console.error('Add user failed:', err);
     res.status(500).json({ error: 'Failed to add user' });
   }
-  const existingUser = await User.findOne({ email });
-if (existingUser) return res.status(409).json({ error: 'User already exists' });
 });
 
-
-// 📄 Get user by ID
+// 📄 Get User by ID
 app.get('/users/:id', async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -103,8 +116,7 @@ app.get('/users/:id', async (req, res) => {
   }
 });
 
-
-// 📚 Get user skills
+// 📚 Get Skills for a User
 app.get('/skills/:userId', async (req, res) => {
   try {
     const skills = await Skill.findOne({ userId: req.params.userId });
@@ -116,30 +128,39 @@ app.get('/skills/:userId', async (req, res) => {
   }
 });
 
-
-// ➕ Add skill
+// ➕ Add a Skill to a User
 app.post('/skills/:userId', async (req, res) => {
   const { skill } = req.body;
-  if (!skill) return res.status(400).json({ error: 'Skill is required' });
+  const userId = req.params.userId;
+
+  if (!skill || !userId) {
+    return res.status(400).json({ error: 'Missing skill or userId' });
+  }
 
   try {
-    let skillDoc = await Skill.findOne({ userId: req.params.userId });
+    let skillDoc = await Skill.findOne({ userId });
+
     if (!skillDoc) {
-      skillDoc = new Skill({ userId: req.params.userId, skills: [skill] });
-    } else if (!skillDoc.skills.includes(skill)) {
+      skillDoc = new Skill({ userId, skills: [skill] });
+      console.log('🆕 Creating new skill doc for:', userId);
+    } else {
+      if (skillDoc.skills.includes(skill)) {
+        console.log('⚠️ Skill already exists:', skill);
+        return res.status(409).json({ error: 'Skill already exists' });
+      }
       skillDoc.skills.push(skill);
+      console.log('➕ Adding skill:', skill);
     }
 
     await skillDoc.save();
-    res.json(skillDoc);
+    res.status(200).json(skillDoc);
   } catch (err) {
-    console.error('Error adding skill:', err);
+    console.error('❌ Error adding skill:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
-
-// ❌ Delete skill
+// ❌ Remove Skill from User
 app.delete('/skills/:userId/:skill', async (req, res) => {
   try {
     const skillDoc = await Skill.findOne({ userId: req.params.userId });
@@ -155,8 +176,7 @@ app.delete('/skills/:userId/:skill', async (req, res) => {
   }
 });
 
-
-// 🟢 Start server
+// 🟢 Start Server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

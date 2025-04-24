@@ -80,6 +80,15 @@ function App() {
     navigate('/login.js');
   };
   
+  useEffect(() => {
+    const storedUser = localStorage.getItem('loggedInUser');
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setNewUser(user);
+    }
+  }, []);
+
+
 
   return (
     <>
@@ -99,7 +108,7 @@ function App() {
         <button className="btn-secondary" onClick={handleLogout}>
           🚪 Logout
         </button>
-        <button className="btn-secondary" onClick={handleClear}>  ... Clear</button>
+
         <button className="btn-secondary" onClick={() => navigate('/signup')}>
          📝 Sign Up
         </button>
@@ -139,7 +148,11 @@ function App() {
               setError={setError}
               setLoading={setLoading}
               navigate={navigate}
-            />
+              setQuery={setQuery}
+              setResults={setResults}
+              setNewUser={setNewUser}
+              
+            />  
           }
         />
         <Route
