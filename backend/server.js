@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 // 🛠️ Models
@@ -68,6 +69,119 @@ app.get('/search', async (req, res) => {
     res.status(500).json({ error: 'Search error' });
   }
 });
+
+// Forgot Password Route (Send reset link via email)
+app.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+
+  // Check if user exists
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(404).json({ error: 'No user found with that email' });
+  }
+
+  // Create a reset token (expires in 1 hour)
+  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+  // Generate the password reset link
+  const resetLink = `https://yourdomain.com/reset-password/${token}`;
+
+  // Send the reset email
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,   // Your email (stored in .env)
+      pass: process.env.EMAIL_PASS    // Your email password (stored in .env)
+    }
+  });
+
+  const emailContent = `
+    <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; }
+          .container { width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
+          .header { text-align: center; margin-bottom: 20px; }
+          .header h1 { color: #333333; }
+          .content { font-size: 16px; color: #555555; line-height: 1.6; }
+          .reset-button { display: inline-block; background-color: #007BFF; color: #ffffff; padding: 12px 25px; text-decoration: none; font-size: 16px; border-radius: 5px; margin-top: 20px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Password Reset Request</h1>
+          </div>
+          <div class="content">
+            <p>Hello,</p>
+            <p>We received a request to reset your password. Please click the button below to reset your password:</p>
+            <a href="${resetLink}" class="reset-button">Reset Password</a>
+            <p>If you did not request a password reset, please ignore this email.</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,    // The email address you're sending from
+      to: email,                       // The user's email address
+      subject: 'Password Reset Request',
+      html: emailContent               // The HTML email content
+    });
+    
+    res.status(200).json({ message: 'Check your email for the reset link' });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ error: 'Error sending reset email' });
+  }
+});
+
+// Reset Password Route (Update password using the reset token)
+app.post('/reset-password/:token', async (req, res) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  try {
+    // Verify the reset token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Find the user by ID (decoded from token)
+    const user = await User.findById(decoded.userId);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+
+    // Save the new password
+    await user.save();
+
+    res.status(200).json({ message: 'Password successfully reset' });
+  } catch (err) {
+    console.error('Error resetting password:', err);
+    res.status(500).json({ error: 'Error resetting password' });
+  }
+});
+
+// Existing Signup Route (hash password and store user)
+app.post('/signup', async (req, res) => {
+  try {
+    const { name, email, phone, password } = req.body;
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(409).json({ error: 'User already exists' });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ name, email, phone, password: hashedPassword });
+    await newUser.save();
+    res.status(201).json({ message: 'Signup successful!' });
+  } catch (err) {
+    console.error('Signup error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 
 // ➕ Add User (unauthenticated)
 app.post('/add', async (req, res) => {

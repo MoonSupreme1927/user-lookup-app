@@ -1,98 +1,120 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './App.css'; // Make sure this path is correct based on your folder structure
 
-function Signup() {
-  const navigate = useNavigate();
-
+const Signup = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    password: ''
+    password: '',
+    confirmPassword: '',
+    resetToken: '',
   });
-
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSignup = async (e) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setMessage('');
+
+    if (formData.password !== formData.confirmPassword) {
+      return setError('Passwords do not match');
+    }
+
+    try {
+      const response = await axios.post('/signup', formData);
+      setMessage(response.data.message);
+      navigate('/login');
+    } catch (err) {
+      setError(err.response?.data?.error || 'An error occurred');
+    }
+  };
+
+  const handleResetPassword = async (e) => {
     e.preventDefault();
     setError('');
     setMessage('');
 
     try {
-      // Sign up the user
-      const signupRes = await axios.post('https://user-lookup-app.onrender.com/signup', formData);
-      setMessage('Signup successful! Redirecting...');
-
-      // Optional: Automatically log them in
-      const loginRes = await axios.post('https://user-lookup-app.onrender.com/login', {
-        email: formData.email,
-        password: formData.password
-      });
-
-      // Save logged-in user info to localStorage
-      localStorage.setItem('loggedInUser', JSON.stringify(loginRes.data.user));
-
-      // Navigate to user profile
-      navigate(`/users/${loginRes.data.user._id}`);
+      const response = await axios.post('/reset-password', { email: formData.email });
+      setMessage(response.data.message);
     } catch (err) {
-      console.error('Signup error:', err);
-      setError(err.response?.data?.error || 'Signup failed');
+      setError(err.response?.data?.error || 'An error occurred');
     }
   };
 
   return (
-    <div className="App">
-      <div className="form-section">
-        <h2>📝 Sign Up</h2>
-        <form onSubmit={handleSignup}>
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="phone"
-            placeholder="Phone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-          <button type="submit" className="btn-primary">Create Account</button>
-        </form>
+    <div>
+      <h2>Sign Up / Claim Account / Reset Password</h2>
+      {message && <p>{message}</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
 
-        {message && <p className="success">{message}</p>}
-        {error && <p className="error">{error}</p>}
-      </div>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          placeholder="Full Name"
+          required
+        />
+        <input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="Email"
+          required
+        />
+        <input
+          type="text"
+          name="phone"
+          value={formData.phone}
+          onChange={handleChange}
+          placeholder="Phone"
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          placeholder="Password"
+          required
+        />
+        <input
+          type="password"
+          name="confirmPassword"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          placeholder="Confirm Password"
+          required
+        />
+        <button type="submit">Submit</button>
+      </form>
+
+      <h3>Forgot your password?</h3>
+      <form onSubmit={handleResetPassword}>
+        <input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="Enter your email"
+          required
+        />
+        <button type="submit">Reset Password</button>
+      </form>
     </div>
   );
-}
+};
 
 export default Signup;
