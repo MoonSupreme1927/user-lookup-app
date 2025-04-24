@@ -5,6 +5,8 @@ import './App.css';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import UserDetail from './UserDetail.js';
 import Login from './Login.js';
+import Signup from './Signup';
+
 
 
 
@@ -73,6 +75,12 @@ function App() {
     setError(null);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('loggedInUser');
+    navigate('/login.js');
+  };
+  
+
   return (
     <>
       <div className="banner">
@@ -81,11 +89,19 @@ function App() {
           className="btn-secondary"
           onClick={() => navigate('/login')}
           style={{ marginLeft: '1rem' }}
-       >
+        >
     🔐   Login
         </button>
         <button className="dark-toggle" onClick={() => setDarkMode(!darkMode)}>
           {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+        </button>
+
+        <button className="btn-secondary" onClick={handleLogout}>
+          🚪 Logout
+        </button>
+        <button className="btn-secondary" onClick={handleClear}>  ... Clear</button>
+        <button className="btn-secondary" onClick={() => navigate('/signup')}>
+         📝 Sign Up
         </button>
       </div>
 
@@ -120,6 +136,16 @@ function App() {
           path="/login"
           element={
             <Login
+              setError={setError}
+              setLoading={setLoading}
+              navigate={navigate}
+            />
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <Signup
               setError={setError}
               setLoading={setLoading}
               navigate={navigate}
