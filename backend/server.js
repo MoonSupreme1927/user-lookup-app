@@ -3,13 +3,21 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-require('dotenv').config();
-const auth = require('./middleware/auth');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 // 🛠️ Models
 const User = require('./models/User');
 const Skill = require('./models/Skill');
+
+// 🔐 Middleware
+const {
+  verifyToken,
+  requireUser,
+  requireAdmin,
+  requireOwner,
+  router: authRoutes
+} = require('./routes/auth'); // Auth routes + middlewares in one file
 
 // 🚀 App Setup
 const app = express();
@@ -23,52 +31,13 @@ mongoose.connect(process.env.MONGO_URI, {
 }).then(() => console.log('✅ MongoDB connected'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
-// 📝 Signup Route - hash password and store user
-app.post('/signup', async (req, res) => {
+// 🔑 Auth Routes (signup, login)
+app.use('/', authRoutes);
+
+// 🧠 Dashboard (protected route)
+app.get('/dashboard', verifyToken, async (req, res) => {
   try {
-    const { name, email, phone, password } = req.body;
-    const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(409).json({ error: 'User already exists' });
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, email, phone, password: hashedPassword });
-    await newUser.save();
-    res.status(201).json({ message: 'Signup successful!' });
-  } catch (err) {
-    console.error('Signup error:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-// 🔐 Login Route - verify password
-app.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ error: 'User not found' });
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ error: 'Invalid password' });
-
-    // ✅ Generate token
-    const token = jwt.sign(
-      { _id: user._id, email: user.email, role: user.role || 'user' },
-      process.env.JWT_SECRET,
-      { expiresIn: '1d' }
-    );
-
-    // ✅ Send token with user data
-    res.status(200).json({ message: 'Login successful', user, token });
-
-  } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
-app.get('/dashboard', auth.verifyToken, async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id).select('-password'); // don't send hashed password
+    const user = await User.findById(req.user._id).select('-password');
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     res.status(200).json({
@@ -80,7 +49,6 @@ app.get('/dashboard', auth.verifyToken, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
-
 
 // 🔍 Search Users
 app.get('/search', async (req, res) => {
@@ -101,7 +69,7 @@ app.get('/search', async (req, res) => {
   }
 });
 
-// ➕ Add New User (unauthenticated)
+// ➕ Add User (unauthenticated)
 app.post('/add', async (req, res) => {
   try {
     const { name, email, phone } = req.body;
@@ -156,20 +124,17 @@ app.post('/skills/:userId', async (req, res) => {
 
     if (!skillDoc) {
       skillDoc = new Skill({ userId, skills: [skill] });
-      console.log('🆕 Creating new skill doc for:', userId);
     } else {
       if (skillDoc.skills.includes(skill)) {
-        console.log('⚠️ Skill already exists:', skill);
         return res.status(409).json({ error: 'Skill already exists' });
       }
       skillDoc.skills.push(skill);
-      console.log('➕ Adding skill:', skill);
     }
 
     await skillDoc.save();
     res.status(200).json(skillDoc);
   } catch (err) {
-    console.error('❌ Error adding skill:', err);
+    console.error('Error adding skill:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
