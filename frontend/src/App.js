@@ -3,7 +3,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import UserDetail from './UserDetail';
+import UserDetail from './UserDetail.js';
+import Login from './Login.js';
+
 
 
 function App() {
@@ -75,6 +77,13 @@ function App() {
     <>
       <div className="banner">
         User Lookup Tool
+        <button
+          className="btn-secondary"
+          onClick={() => navigate('/login')}
+          style={{ marginLeft: '1rem' }}
+       >
+    🔐   Login
+        </button>
         <button className="dark-toggle" onClick={() => setDarkMode(!darkMode)}>
           {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
         </button>
@@ -107,6 +116,16 @@ function App() {
           }
         />
         <Route path="/users/:id" element={<UserDetail />} />
+        <Route
+          path="/login"
+          element={
+            <Login
+              setError={setError}
+              setLoading={setLoading}
+              navigate={navigate}
+            />
+          }
+        />
       </Routes>
     </>
   );
