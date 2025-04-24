@@ -6,7 +6,6 @@ const bcrypt = require('bcryptjs');
 require('dotenv').config();
 const auth = require('./middleware/auth');
 const jwt = require('jsonwebtoken');
-const path = require('path');
 
 // 🛠️ Models
 const User = require('./models/User');
@@ -63,6 +62,21 @@ app.post('/login', async (req, res) => {
 
   } catch (err) {
     console.error('Login error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.get('/dashboard', auth.verifyToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('-password'); // don't send hashed password
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    res.status(200).json({
+      message: `Welcome to your dashboard, ${user.name}`,
+      user
+    });
+  } catch (err) {
+    console.error('Dashboard error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });

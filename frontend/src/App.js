@@ -6,6 +6,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import UserDetail from './UserDetail.js';
 import Login from './Login.js';
 import Signup from './Signup';
+import Dashboard from './Dashboard';
 
 
 
@@ -112,6 +113,10 @@ function App() {
         <button className="btn-secondary" onClick={() => navigate('/signup')}>
          📝 Sign Up
         </button>
+        
+        <button className="btn-secondary" onClick={() => navigate('/dashboard')}>
+          📊 Dashboard  
+        </button>
       </div>
 
       {loading && (
@@ -135,7 +140,6 @@ function App() {
               darkMode={darkMode}
               handleSearch={handleSearch}
               handleAddUser={handleAddUser}
-              handleClear={handleClear}
               navigate={navigate}
             />
           }
@@ -159,6 +163,16 @@ function App() {
           path="/signup"
           element={
             <Signup
+              setError={setError}
+              setLoading={setLoading}
+              navigate={navigate}
+            />
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <Dashboard
               setError={setError}
               setLoading={setLoading}
               navigate={navigate}

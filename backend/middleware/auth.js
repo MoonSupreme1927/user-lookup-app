@@ -1,8 +1,7 @@
-// middleware/auth.js
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-// Middleware to verify JWT
+// ✅ Token verification middleware
 function verifyToken(req, res, next) {
   const token = req.headers['authorization']?.split(' ')[1];
   if (!token) return res.status(401).json({ error: 'Access denied. No token provided.' });
@@ -12,11 +11,11 @@ function verifyToken(req, res, next) {
     req.user = decoded;
     next();
   } catch (err) {
-    return res.status(400).json({ error: 'Invalid token' });
+    res.status(400).json({ error: 'Invalid token' });
   }
 }
 
-// Middleware to require user role
+// ✅ Role check: user
 function requireUser(req, res, next) {
   if (req.user.role !== 'user') {
     return res.status(403).json({ error: 'Users only' });
@@ -24,7 +23,7 @@ function requireUser(req, res, next) {
   next();
 }
 
-// Middleware to require admin role
+// ✅ Role check: admin
 function requireAdmin(req, res, next) {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ error: 'Admins only' });
@@ -32,7 +31,7 @@ function requireAdmin(req, res, next) {
   next();
 }
 
-// Middleware to require owner access (by ID)
+// ✅ Owner check
 function requireOwner(req, res, next) {
   if (req.user._id !== req.params.id) {
     return res.status(403).json({ error: 'Owners only' });
@@ -40,7 +39,6 @@ function requireOwner(req, res, next) {
   next();
 }
 
-// Export all middlewares
 module.exports = {
   verifyToken,
   requireUser,
