@@ -1,15 +1,12 @@
-import Home from './Home';
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import './App.css';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import UserDetail from './UserDetail.js';
-import Login from './Login.js';
+import Home from './Home';
+import UserDetail from './UserDetail';
+import Login from './Login';
 import Signup from './Signup';
 import Dashboard from './Dashboard';
-
-
-
+import './App.css';
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -20,8 +17,8 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // Debounced search on query change
   useEffect(() => {
     const delaySearch = setTimeout(() => {
       if (query.trim()) {
@@ -78,9 +75,9 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem('loggedInUser');
-    navigate('/login.js');
+    navigate('/login');
   };
-  
+
   useEffect(() => {
     const storedUser = localStorage.getItem('loggedInUser');
     if (storedUser) {
@@ -89,35 +86,34 @@ function App() {
     }
   }, []);
 
-
-
   return (
     <>
       <div className="banner">
         User Lookup Tool
-        <button
-          className="btn-secondary"
-          onClick={() => navigate('/login')}
-          style={{ marginLeft: '1rem' }}
-        >
-    🔐   Login
+        <button className="btn-secondary" onClick={() => navigate('/login')} style={{ marginLeft: '1rem' }}>
+          🔐 Login
         </button>
         <button className="dark-toggle" onClick={() => setDarkMode(!darkMode)}>
           {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
         </button>
-
         <button className="btn-secondary" onClick={handleLogout}>
           🚪 Logout
         </button>
-
         <button className="btn-secondary" onClick={() => navigate('/signup')}>
-         📝 Sign Up
+          📝 Sign Up
         </button>
-        
         <button className="btn-secondary" onClick={() => navigate('/dashboard')}>
-          📊 Dashboard  
+          📊 Dashboard
         </button>
       </div>
+
+      {location.pathname !== '/' && (
+        <div className="back-container">
+          <button className="btn-secondary back-button" onClick={() => navigate(-1)}>
+            🔙 Back
+          </button>
+        </div>
+      )}
 
       {loading && (
         <div className="overlay">
@@ -155,29 +151,16 @@ function App() {
               setQuery={setQuery}
               setResults={setResults}
               setNewUser={setNewUser}
-              
-            />  
+            />
           }
         />
         <Route
           path="/signup"
-          element={
-            <Signup
-              setError={setError}
-              setLoading={setLoading}
-              navigate={navigate}
-            />
-          }
+          element={<Signup setError={setError} setLoading={setLoading} navigate={navigate} />}
         />
         <Route
           path="/dashboard"
-          element={
-            <Dashboard
-              setError={setError}
-              setLoading={setLoading}
-              navigate={navigate}
-            />
-          }
+          element={<Dashboard setError={setError} setLoading={setLoading} navigate={navigate} />}
         />
       </Routes>
     </>
