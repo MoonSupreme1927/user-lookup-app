@@ -12,16 +12,21 @@ const ResetPassword = () => {
 
   const handleReset = async (e) => {
     e.preventDefault();
+    setError('');
+    setMessage('');
+
     if (password !== confirm) {
-      return setError('Passwords do not match');
+      setError('❗ Passwords do not match');
+      return;
     }
 
     try {
-      const res = await axios.post(`https://user-lookup-app.onrender.com/reset-password/${token}`, { password });
-      setMessage(res.data.message);
-      setTimeout(() => navigate('/login'), 2000);
+      const response = await axios.post(`https://user-lookup-app.onrender.com/reset-password/${token}`, { password });
+      setMessage(response.data.message || '✅ Password reset successful!');
+      setTimeout(() => navigate('/login'), 2500);
     } catch (err) {
-      setError(err.response?.data?.error || 'Reset failed');
+      console.error('Reset error:', err);
+      setError(err.response?.data?.error || 'Reset failed. Please try again.');
     }
   };
 
@@ -43,8 +48,11 @@ const ResetPassword = () => {
           onChange={(e) => setConfirm(e.target.value)}
           required
         />
-        <button className="btn-primary" type="submit">Reset Password</button>
+        <button className="btn-primary" type="submit">
+          Reset Password
+        </button>
       </form>
+
       {message && <p className="success">{message}</p>}
       {error && <p className="error">{error}</p>}
     </div>

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
-const Login = ({ setError, setLoading, navigate, setQuery, setResults, setNewUser }) => {
+const Login = ({ setError, setLoading, navigate }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const location = useLocation();
 
   useEffect(() => {
@@ -13,55 +14,63 @@ const Login = ({ setError, setLoading, navigate, setQuery, setResults, setNewUse
     }
   }, [location]);
 
-  // ...rest of your login logic
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setError('');
     setErrorMessage('');
+    setLoading(true);
 
-    navigate('/dashboard');
     try {
-      const response = await axios.post('https://user-lookup-app-frontend.onrender.com/login', { email, password });
-      const { token, user } = response.data;
-      
+      const { data } = await axios.post('https://user-lookup-app.onrender.com/login', formData);
+      const { token, user } = data;
+
+      localStorage.setItem('token', token);
       localStorage.setItem('loggedInUser', JSON.stringify(user));
-      navigate(`/users/${user._id}`);
+      navigate('/dashboard');
     } catch (err) {
-      setErrorMessage(err.response?.data?.error || 'Login failed');
+      console.error('Login error:', err);
+      setErrorMessage(err.response?.data?.error || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleForgotPassword = () => {
-    navigate('/forgot-password'); // Navigates to Forgot Password page
+    navigate('/forgot-password');
   };
 
   return (
     <div className="form-section">
       <h2>🔐 Login</h2>
+      {message && <p className="message">{message}</p>}
       <form onSubmit={handleLogin}>
         <input
           type="email"
+          name="email"
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={formData.email}
+          onChange={handleChange}
           required
         />
         <input
           type="password"
+          name="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={formData.password}
+          onChange={handleChange}
           required
         />
         <button type="submit" className="btn-primary">Login</button>
       </form>
 
-      {error && <p className="error">{error}</p>}
+      {errorMessage && <p className="error">{errorMessage}</p>}
 
-      <button className="btn-secondary" onClick={handleForgotPassword}>
+      <button type="button" className="btn-secondary" onClick={handleForgotPassword}>
         Forgot Password?
       </button>
     </div>

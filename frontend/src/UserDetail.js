@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-function UserDetail() {
+const UserDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const [user, setUser] = useState(null);
   const [skills, setSkills] = useState([]);
   const [newSkill, setNewSkill] = useState('');
@@ -14,14 +15,15 @@ function UserDetail() {
   const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
   const isOwner = loggedInUser?._id === id;
 
-  // Fetch user + skills
   useEffect(() => {
     const fetchUserAndSkills = async () => {
       try {
-        const userRes = await axios.get(`https://user-lookup-app.onrender.com/users/${id}`);
-        setUser(userRes.data);
+        const [userRes, skillRes] = await Promise.all([
+          axios.get(`https://user-lookup-app.onrender.com/users/${id}`),
+          axios.get(`https://user-lookup-app.onrender.com/skills/${id}`),
+        ]);
 
-        const skillRes = await axios.get(`https://user-lookup-app.onrender.com/skills/${id}`);
+        setUser(userRes.data);
         setSkills(skillRes.data.skills || []);
       } catch (err) {
         console.error(err);
@@ -36,17 +38,13 @@ function UserDetail() {
 
   const handleAddSkill = async () => {
     const trimmed = newSkill.trim();
-    if (!trimmed || skills.includes(trimmed)) {
-      setNewSkill('');
-      return;
-    }
+    if (!trimmed || skills.includes(trimmed)) return setNewSkill('');
 
     try {
-      const response = await axios.post(
-        `https://user-lookup-app.onrender.com/skills/${id}`,
-        { skill: trimmed }
-      );
-      setSkills(response.data.skills);
+      const res = await axios.post(`https://user-lookup-app.onrender.com/skills/${id}`, {
+        skill: trimmed,
+      });
+      setSkills(res.data.skills);
       setNewSkill('');
     } catch (err) {
       console.error('Failed to add skill:', err);
@@ -55,10 +53,10 @@ function UserDetail() {
 
   const handleRemoveSkill = async (skillToRemove) => {
     try {
-      const response = await axios.delete(
+      const res = await axios.delete(
         `https://user-lookup-app.onrender.com/skills/${id}/${skillToRemove}`
       );
-      setSkills(response.data.skills);
+      setSkills(res.data.skills);
     } catch (err) {
       console.error('Failed to remove skill:', err);
     }
@@ -71,18 +69,13 @@ function UserDetail() {
   return (
     <div className="App">
       <div className="detail-container">
-        <div style={{ width: '100%' }}>
+        <div className="header">
           <h1>User Profile</h1>
-          <button
-            className="btn-secondary"
-            onClick={() => navigate('/')}
-            style={{ marginBottom: '1rem' }}
-          >
+          <button className="btn-secondary" onClick={() => navigate('/')}>
             ⬅️ Back to Search
           </button>
         </div>
 
-        {/* Contact Info */}
         <div className="contact-card">
           <h2>👤 Contact Info</h2>
           <p><strong>Name:</strong> {user.name}</p>
@@ -90,7 +83,6 @@ function UserDetail() {
           <p><strong>Phone:</strong> {user.phone}</p>
         </div>
 
-        {/* Skills Section */}
         <div className="skills-card">
           <h2>💼 Skills</h2>
           {skills.length > 0 ? (
@@ -99,7 +91,9 @@ function UserDetail() {
                 <li key={idx}>
                   {skill}
                   {isOwner && (
-                    <button onClick={() => handleRemoveSkill(skill)}>❌</button>
+                    <button onClick={() => handleRemoveSkill(skill)} className="remove-skill-btn">
+                      ❌
+                    </button>
                   )}
                 </li>
               ))}
@@ -123,9 +117,6 @@ function UserDetail() {
       </div>
     </div>
   );
-}
+};
 
 export default UserDetail;
-
-// Compare this snippet from frontend/src/App.js: 
-// import React, { useState } from 'react';

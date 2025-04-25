@@ -9,8 +9,8 @@ const Signup = () => {
     phone: '',
     password: '',
     confirmPassword: '',
-    resetToken: '',
   });
+
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
@@ -26,20 +26,19 @@ const Signup = () => {
     setMessage('');
 
     if (formData.password !== formData.confirmPassword) {
-      return setError('Passwords do not match');
+      setError('❗ Passwords do not match');
+      return;
     }
 
     try {
       const response = await axios.post('/signup', formData);
-      setMessage(response.data.message);
-      navigate('/login', { state: { fromSignup: true } });
+      setMessage(response.data.message || '🎉 Signup successful!');
+      setTimeout(() => navigate('/login', { state: { fromSignup: true } }), 2000);
     } catch (err) {
       setError(err.response?.data?.error || 'An error occurred');
     }
-    {message && <p style={{ color: 'green' }}>{message}</p>}
-    {error && <p style={{ color: 'red' }}>{error}</p>}
   };
-    navigate('/dashboard'); // Redirect to dashboard after successful signup
+
   const handleResetPassword = async (e) => {
     e.preventDefault();
     setError('');
@@ -47,73 +46,74 @@ const Signup = () => {
 
     try {
       const response = await axios.post('/reset-password', { email: formData.email });
-      setMessage(response.data.message);
+      setMessage(response.data.message || '📬 Reset link sent to your email');
     } catch (err) {
-      setError(err.response?.data?.error || 'An error occurred');
+      setError(err.response?.data?.error || 'Reset failed. Try again.');
     }
   };
 
   return (
-    <div>
-      <h2>Sign Up / Claim Account / Reset Password</h2>
-      {message && <p>{message}</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+    <div className="form-section">
+      <h2>📝 Sign Up</h2>
+
+      {message && <p className="success">{message}</p>}
+      {error && <p className="error">{error}</p>}
 
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           name="name"
+          placeholder="Full Name"
           value={formData.name}
           onChange={handleChange}
-          placeholder="Full Name"
           required
         />
         <input
           type="email"
           name="email"
+          placeholder="Email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="Email"
           required
         />
         <input
           type="text"
           name="phone"
+          placeholder="Phone"
           value={formData.phone}
           onChange={handleChange}
-          placeholder="Phone"
           required
         />
         <input
           type="password"
           name="password"
+          placeholder="Password"
           value={formData.password}
           onChange={handleChange}
-          placeholder="Password"
           required
         />
         <input
           type="password"
           name="confirmPassword"
+          placeholder="Confirm Password"
           value={formData.confirmPassword}
           onChange={handleChange}
-          placeholder="Confirm Password"
           required
         />
-        <button type="submit">Submit</button>
+        <button className="btn-primary" type="submit">Sign Up</button>
       </form>
 
-      <h3>Forgot your password?</h3>
+      <h3>🔑 Forgot Password?</h3>
       <form onSubmit={handleResetPassword}>
         <input
           type="email"
           name="email"
+          placeholder="Enter your email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="Enter your email"
           required
         />
-        <button type="submit">Reset Password</button>
+        <button className="btn-secondary" type="submit">Send Reset Link</button>
       </form>
     </div>
   );
