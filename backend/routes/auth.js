@@ -1,12 +1,11 @@
-const express = require('express');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const router = express.Router();
-const { signupUser, loginUser } = require('../controllers/authController');
 
-// 🔐 Token verification middleware
+// Verify JWT token and attach user to request
 function verifyToken(req, res, next) {
-  const token = req.headers['authorization']?.split(' ')[1];
+  const authHeader = req.headers['authorization'];
+  const token = authHeader?.split(' ')[1];
+
   if (!token) return res.status(401).json({ error: 'Access denied. No token provided.' });
 
   try {
@@ -18,39 +17,32 @@ function verifyToken(req, res, next) {
   }
 }
 
-// 🔐 Role check: user
+// Protect routes for any logged-in user
 function requireUser(req, res, next) {
-  if (req.user.role !== 'user') {
-    return res.status(403).json({ error: 'Users only' });
-  }
+  if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
   next();
 }
 
-// 🔐 Role check: admin
+// Admin-only access
 function requireAdmin(req, res, next) {
-  if (req.user.role !== 'admin') {
+  if (req.user?.role !== 'admin') {
     return res.status(403).json({ error: 'Admins only' });
   }
   next();
 }
 
-// 🔐 Owner check
+// User can access only their own data (or admin override)
 function requireOwner(req, res, next) {
-  if (req.user._id !== req.params.id) {
-    return res.status(403).json({ error: 'Owners only' });
+  const targetId = req.params.userId || req.params.id;
+  if (req.user._id !== targetId && req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Access denied. Not your account.' });
   }
   next();
 }
 
-// 🛠 Auth Routes
-router.post('/signup', signupUser);
-router.post('/login', loginUser);
-
-// Export both router and middlewares if needed elsewhere
 module.exports = {
-  router,
   verifyToken,
   requireUser,
   requireAdmin,
-  requireOwner
+  requireOwner,
 };
