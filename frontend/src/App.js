@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
-import Home from './Home';
-//import UserDetail from './UserDetail';
 import Login from './Login';
 import Signup from './Signup';
 import Dashboard from './Dashboard';
 import ResetPassword from './ResetPassword';
 import ForgotPassword from './ForgotPassword';
+import UserDetail from './UserDetail'; // assuming you still use it
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -50,14 +49,19 @@ function App() {
     <>
       <div className="banner">
         <span>User Lookup Tool</span>
+        <form onSubmit={(e) => { e.preventDefault(); searchUsers(query); }} className="search-form">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search users..."
+          />
+          <button type="submit">🔍</button>
+        </form>
         <button className="btn-secondary" onClick={() => navigate('/login')}>🔐 Login</button>
-
         <button className="btn-secondary" onClick={() => navigate('/signup')}>📝 Sign Up</button>
-
         <button className="btn-secondary" onClick={() => navigate('/dashboard')}>📊 Dashboard</button>
-
         <button className="btn-secondary" onClick={handleLogout}>🚪 Logout</button>
-
         <button className="dark-toggle" onClick={() => setDarkMode(!darkMode)}>
           {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
         </button>
@@ -66,43 +70,22 @@ function App() {
       {loading && <div className="overlay"><div className="spinner" /></div>}
 
       <Routes>
-        <Route
-          path="/"
-          element={
-            <Home
-              query={query}
-              setQuery={setQuery}
-              results={results}
-              error={error}
-              loading={loading}
-              newUser={newUser}
-              setNewUser={setNewUser}
-              darkMode={darkMode}
-              handleSearch={(e) => { e.preventDefault(); searchUsers(query); }}
-              handleAddUser={async (e) => {
-                e.preventDefault();
-                setLoading(true);
-                try {
-                  await axios.post('https://user-lookup-app.onrender.com/add', newUser);
-                  setQuery(newUser.name);
-                  setNewUser({ name: '', email: '', phone: '' });
-                } catch (err) {
-                  setError('Failed to add user');
-                } finally {
-                  setLoading(false);
-                }
-              }}
-              navigate={navigate}
-            />
-          }
-        />
         <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<Login setError={setError} setLoading={setLoading} navigate={navigate} setQuery={setQuery} setResults={setResults} setNewUser={setNewUser} />} />
-        <Route path="/signup" element={<Signup setError={setError} setLoading={setLoading} navigate={navigate} />} />
-        <Route path="/dashboard" element={<Dashboard setError={setError} setLoading={setLoading} navigate={navigate} />} />
-        <Route path="/users/:id" element={<UserDetail />} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} /> 
+        <Route
+          path="/login"
+          element={<Login setError={setError} setLoading={setLoading} navigate={navigate} setQuery={setQuery} setResults={setResults} setNewUser={setNewUser} />}
+        />
+        <Route
+          path="/signup"
+          element={<Signup setError={setError} setLoading={setLoading} navigate={navigate} />}
+        />
+        <Route
+          path="/dashboard"
+          element={<Dashboard setError={setError} setLoading={setLoading} navigate={navigate} />}
+        />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/users/:id" element={<UserDetail />} />
       </Routes>
     </>
   );
