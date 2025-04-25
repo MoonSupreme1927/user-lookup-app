@@ -32,12 +32,14 @@ const Signup = () => {
     try {
       const response = await axios.post('/signup', formData);
       setMessage(response.data.message);
-      navigate('/login');
+      navigate('/login', { state: { fromSignup: true } });
     } catch (err) {
       setError(err.response?.data?.error || 'An error occurred');
     }
+    {message && <p style={{ color: 'green' }}>{message}</p>}
+    {error && <p style={{ color: 'red' }}>{error}</p>}
   };
-
+    navigate('/dashboard'); // Redirect to dashboard after successful signup
   const handleResetPassword = async (e) => {
     e.preventDefault();
     setError('');

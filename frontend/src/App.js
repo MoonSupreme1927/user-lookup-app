@@ -51,9 +51,13 @@ function App() {
       <div className="banner">
         <span>User Lookup Tool</span>
         <button className="btn-secondary" onClick={() => navigate('/login')}>🔐 Login</button>
+
         <button className="btn-secondary" onClick={() => navigate('/signup')}>📝 Sign Up</button>
+
         <button className="btn-secondary" onClick={() => navigate('/dashboard')}>📊 Dashboard</button>
+
         <button className="btn-secondary" onClick={handleLogout}>🚪 Logout</button>
+
         <button className="dark-toggle" onClick={() => setDarkMode(!darkMode)}>
           {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
         </button>
@@ -92,10 +96,11 @@ function App() {
             />
           }
         />
-        <Route path="/users/:id" element={<UserDetail />} />
+        
         <Route path="/login" element={<Login setError={setError} setLoading={setLoading} navigate={navigate} setQuery={setQuery} setResults={setResults} setNewUser={setNewUser} />} />
         <Route path="/signup" element={<Signup setError={setError} setLoading={setLoading} navigate={navigate} />} />
         <Route path="/dashboard" element={<Dashboard setError={setError} setLoading={setLoading} navigate={navigate} />} />
+        <Route path="/users/:id" element={<UserDetail />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} /> 
         <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
