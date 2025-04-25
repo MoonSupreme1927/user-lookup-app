@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 import Home from './Home';
-import UserDetail from './UserDetail';
+//import UserDetail from './UserDetail';
 import Login from './Login';
 import Signup from './Signup';
 import Dashboard from './Dashboard';
@@ -96,7 +96,7 @@ function App() {
             />
           }
         />
-        
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login setError={setError} setLoading={setLoading} navigate={navigate} setQuery={setQuery} setResults={setResults} setNewUser={setNewUser} />} />
         <Route path="/signup" element={<Signup setError={setError} setLoading={setLoading} navigate={navigate} />} />
         <Route path="/dashboard" element={<Dashboard setError={setError} setLoading={setLoading} navigate={navigate} />} />
