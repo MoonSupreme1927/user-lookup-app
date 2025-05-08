@@ -11,6 +11,14 @@ const Signup = () => {
     confirmPassword: '',
   });
 
+  const [newUser, setNewUser] = useState({ name: '', email: '', phone: '', password: '' });
+  <input
+  type="text"
+  value={newUser.name}
+  onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+/>
+
+  
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
