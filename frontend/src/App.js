@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 import LandingPage from './LandingPage';
@@ -8,7 +8,7 @@ import Signup from './Signup';
 import Dashboard from './Dashboard';
 import ResetPassword from './ResetPassword';
 import ForgotPassword from './ForgotPassword';
-import UserDetail from './UserDetail'; // assuming you still use it
+import UserDetail from './UserDetail';
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -47,9 +47,15 @@ function App() {
   };
 
   return (
-    <>
-      <div className="banner">
-        <span>User Lookup Tool</span>
+    <div className={darkMode ? 'app dark-mode' : 'app'}>
+      <header className="banner">
+        <div className="banner-top">
+          <span className="banner-title">User Lookup Tool</span>
+          <button className="dark-toggle" onClick={() => setDarkMode(!darkMode)}>
+            {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+          </button>
+        </div>
+
         <form onSubmit={(e) => { e.preventDefault(); searchUsers(query); }} className="search-form">
           <input
             type="text"
@@ -59,22 +65,43 @@ function App() {
           />
           <button type="submit">🔍</button>
         </form>
-        <button className="btn-secondary" onClick={() => navigate('/login')}>🔐 Login</button>
-        <button className="btn-secondary" onClick={() => navigate('/signup')}>📝 Sign Up</button>
-        <button className="btn-secondary" onClick={() => navigate('/dashboard')}>📊 Dashboard</button>
-        <button className="btn-secondary" onClick={handleLogout}>🚪 Logout</button>
-        <button className="dark-toggle" onClick={() => setDarkMode(!darkMode)}>
-          {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
-        </button>
-      </div>
+
+        <div className="banner-buttons">
+          <button className="btn-secondary" onClick={() => navigate('/login')}>🔐 Login</button>
+          <button className="btn-secondary" onClick={() => navigate('/signup')}>📝 Sign Up</button>
+          <button className="btn-secondary" onClick={() => navigate('/dashboard')}>📊 Dashboard</button>
+          <button className="btn-secondary" onClick={handleLogout}>🚪 Logout</button>
+        </div>
+      </header>
 
       {loading && <div className="overlay"><div className="spinner" /></div>}
 
       <Routes>
-        <Route path="/" element={<LandingPage setError={setError} setLoading={setLoading} navigate={navigate} setQuery={setQuery} setResults={setResults} setNewUser={setNewUser} />} />
+        <Route
+          path="/"
+          element={
+            <LandingPage
+              setError={setError}
+              setLoading={setLoading}
+              navigate={navigate}
+              setQuery={setQuery}
+              setResults={setResults}
+              setNewUser={setNewUser}
+            />
+          }
+        />
         <Route
           path="/login"
-          element={<Login setError={setError} setLoading={setLoading} navigate={navigate} setQuery={setQuery} setResults={setResults} setNewUser={setNewUser} />}
+          element={
+            <Login
+              setError={setError}
+              setLoading={setLoading}
+              navigate={navigate}
+              setQuery={setQuery}
+              setResults={setResults}
+              setNewUser={setNewUser}
+            />
+          }
         />
         <Route
           path="/signup"
@@ -88,8 +115,10 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/users/:id" element={<UserDetail />} />
       </Routes>
-    </>
+    </div>
   );
 }
 
 export default App;
+// and a book club section with a link to join the club.
+// It also includes a dark mode toggle and a search bar for user queries.

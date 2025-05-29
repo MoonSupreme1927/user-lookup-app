@@ -11,18 +11,34 @@ body {
   background-color: #0077cc;
   color: white;
   padding: 1rem 2rem;
-  text-align: center;
   font-size: 1.5rem;
   font-weight: bold;
   position: relative;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  padding: 10px;
+}
+.banner-top {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+.banner h1 {
+  margin: 0;
+}
+
+.banner-buttons {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 /* Dark mode toggle button */
 .dark-toggle {
+
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -110,13 +126,18 @@ form button {
 }
 
 .btn-secondary {
-  background-color: #e0e0e0;
-  color: #333;
+  background-color: white;
+  color: #0077cc;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .btn-secondary:hover {
-  background-color: #ccc;
+  background-color: #ddd;
 }
 
 /* Spinner Overlay */
@@ -273,3 +294,11 @@ form button {
   flex: 1;
   padding: 0.5rem 0.75rem;
 }
+.add-skill-form button {
+  padding: 0.5rem 1rem;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+} 

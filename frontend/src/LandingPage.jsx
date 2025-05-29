@@ -19,7 +19,7 @@ const LandingPage = () => {
             title="MSNBC Live"
             width="100%"
             height="315"
-            src="https://www.youtube.com/embed/live_stream?channel=UCaXkIU1QidjPwiAYu6GcHjg"
+            src="https://www.youtube.com/embed/live_stream?channel=UCaXkIU1QidjPwiAYu6GcHjhttps://archive.nytimes.com/www.nytimes.com/services/xml/rss/index.html?mcubz=0g"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
