@@ -9,7 +9,6 @@ const Login = ({ setError, setLoading }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Display message if navigated from signup
   useEffect(() => {
     if (location.state?.fromSignup) {
       setMessage('🎉 Signup successful! Please log in.');
@@ -31,6 +30,7 @@ const Login = ({ setError, setLoading }) => {
 
     try {
       const { data } = await axios.post('https://user-lookup-app.onrender.com/login', formData);
+
       const { token, user } = data;
 
       if (!token || !user) {
@@ -38,12 +38,12 @@ const Login = ({ setError, setLoading }) => {
         return;
       }
 
-      // Store token & user info
+      // Store token and user info
       localStorage.setItem('token', token);
       localStorage.setItem('loggedInUser', JSON.stringify(user));
 
-      // Optional: store token expiry time (if you want to auto-expire)
-      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 1 day
+      // Optional: Token expiry logic (1 day)
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
       localStorage.setItem('tokenExpiry', expiresAt.toISOString());
 
       navigate('/dashboard');

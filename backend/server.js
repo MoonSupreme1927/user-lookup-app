@@ -3,7 +3,10 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { verifyToken, requireUser } = require('./middleware/auth');
+// Load environment variables
 require('dotenv').config();
+
 
 const User = require('./models/User');
 const Skill = require('./models/Skill');
@@ -64,6 +67,16 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+app.get('/dashboard', verifyToken, requireUser, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('-password');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json({ user });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+// 🛠️ Admin Routes
 
 // 🧾 Public Routes
 app.get('/search', async (req, res) => {

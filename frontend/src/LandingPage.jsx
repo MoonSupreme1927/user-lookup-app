@@ -19,7 +19,7 @@ const LandingPage = () => {
             title="MSNBC Live"
             width="100%"
             height="315"
-            src="https://www.youtube.com/embed/live_stream?channel=UCaXkIU1QidjPwiAYu6GcHjhttps://archive.nytimes.com/www.nytimes.com/services/xml/rss/index.html?mcubz=0g"
+            src="https://www.youtube.com/watch?v=g5e5ZhUneyM"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -41,6 +41,12 @@ const LandingPage = () => {
             Suggest a Book →
           </a>
         </div>
+      </section>
+
+      <section style={styles.section}>
+        <h2>Join our monthly Bookclub!!</h2>
+        <p>See bookclub readers list</p>
+        <Link to="/search" style={styles.loginBtn}>JOIN NOW!</Link>
       </section>
     </div>
   );
