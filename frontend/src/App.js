@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
+import LandingPage from './LandingPage';
 import Login from './Login';
 import Signup from './Signup';
 import Dashboard from './Dashboard';
@@ -70,7 +71,11 @@ function App() {
       {loading && <div className="overlay"><div className="spinner" /></div>}
 
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route
+          path="/LandingPage"
+          element={<LandingPage setError={setError} setLoading={setLoading} navigate={navigate} setQuery={setQuery} setResults={setResults} setNewUser={setNewUser} />}
+        
+        />
         <Route
           path="/login"
           element={<Login setError={setError} setLoading={setLoading} navigate={navigate} setQuery={setQuery} setResults={setResults} setNewUser={setNewUser} />}
