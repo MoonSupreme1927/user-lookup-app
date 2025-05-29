@@ -8,10 +8,11 @@ import Signup from './Signup';
 import Dashboard from './Dashboard';
 import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
+import LandingPage from './LandingPage';
 
 const AppRoutes = (props) => (
   <Routes>
-    <Route path="/" element={<Login {...props} />} />
+    <Route path="/" element={<LandingPage {...props} />} />
     <Route path="/login" element={<Login {...props} />} />
     <Route path="/signup" element={<Signup {...props} />} />
     <Route path="/dashboard" element={<Dashboard {...props} />} />
