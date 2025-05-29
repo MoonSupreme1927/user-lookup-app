@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import axios from 'axios';
-import App from './App.css';
+import './App.css';
 import LandingPage from './LandingPage';
 import Login from './Login';
 import Signup from './Signup';
