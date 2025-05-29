@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const Login = ({ setError, setLoading, navigate }) => {
+const Login = ({ setError, setLoading }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
 
+  // Display message if navigated from signup
   useEffect(() => {
     if (location.state?.fromSignup) {
       setMessage('🎉 Signup successful! Please log in.');
+    } else {
+      setMessage('');
     }
   }, [location]);
 
@@ -29,8 +33,19 @@ const Login = ({ setError, setLoading, navigate }) => {
       const { data } = await axios.post('https://user-lookup-app.onrender.com/login', formData);
       const { token, user } = data;
 
+      if (!token || !user) {
+        setErrorMessage('Invalid response from server.');
+        return;
+      }
+
+      // Store token & user info
       localStorage.setItem('token', token);
       localStorage.setItem('loggedInUser', JSON.stringify(user));
+
+      // Optional: store token expiry time (if you want to auto-expire)
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 1 day
+      localStorage.setItem('tokenExpiry', expiresAt.toISOString());
+
       navigate('/dashboard');
     } catch (err) {
       console.error('Login error:', err);

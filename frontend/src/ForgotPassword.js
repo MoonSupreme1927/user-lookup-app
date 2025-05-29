@@ -1,3 +1,4 @@
+// src/ForgotPassword.js
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -12,31 +13,28 @@ const ForgotPassword = () => {
     setError('');
 
     try {
-      const response = await axios.post('https://user-lookup-app.onrender.com/forgot-password', { email });
-      setMessage(response.data.message || 'Check your email for the reset link.');
+      const response = await axios.post('https://user-lookup-app.onrender.com/reset-password', { email });
+      setMessage(response.data.message || '📬 Reset link sent!');
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.error || 'Something went wrong. Please try again.');
+      setError(err.response?.data?.error || '❌ Failed to send reset link');
     }
   };
 
   return (
-    <div className="form-section" style={{ maxWidth: '400px', margin: 'auto', paddingTop: '2rem' }}>
-      <h2>🔑 Forgot Password</h2>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+    <div className="form-section">
+      <h2>🔁 Forgot Password</h2>
+      {message && <p className="success">{message}</p>}
+      {error && <p className="error">{error}</p>}
+      <form onSubmit={handleSubmit}>
         <input
           type="email"
           placeholder="Enter your email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          style={{ padding: '0.5rem' }}
         />
-        <button type="submit" className="btn-primary">Submit</button>
+        <button className="btn-primary" type="submit">Send Reset Link</button>
       </form>
-
-      {message && <p className="success" style={{ color: 'green', marginTop: '1rem' }}>{message}</p>}
-      {error && <p className="error" style={{ color: 'red', marginTop: '1rem' }}>{error}</p>}
     </div>
   );
 };

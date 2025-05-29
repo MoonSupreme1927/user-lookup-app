@@ -31,7 +31,7 @@ const Signup = () => {
     }
 
     try {
-      const response = await axios.post('/signup', formData);
+      const response = await axios.post('https://user-lookup-app.onrender.com/signup', formData);
       setMessage(response.data.message || '🎉 Signup successful!');
       setTimeout(() => navigate('/login', { state: { fromSignup: true } }), 2000);
     } catch (err) {
@@ -45,7 +45,9 @@ const Signup = () => {
     setMessage('');
 
     try {
-      const response = await axios.post('/reset-password', { email: formData.email });
+      const response = await axios.post('https://user-lookup-app.onrender.com/reset-password', {
+        email: formData.email
+      });
       setMessage(response.data.message || '📬 Reset link sent to your email');
     } catch (err) {
       setError(err.response?.data?.error || 'Reset failed. Try again.');
