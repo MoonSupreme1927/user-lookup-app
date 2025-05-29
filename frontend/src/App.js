@@ -71,11 +71,7 @@ function App() {
       {loading && <div className="overlay"><div className="spinner" /></div>}
 
       <Routes>
-        <Route
-          path="/LandingPage"
-          element={<LandingPage setError={setError} setLoading={setLoading} navigate={navigate} setQuery={setQuery} setResults={setResults} setNewUser={setNewUser} />}
-        
-        />
+        <Route path="/" element={<LandingPage setError={setError} setLoading={setLoading} navigate={navigate} setQuery={setQuery} setResults={setResults} setNewUser={setNewUser} />} />
         <Route
           path="/login"
           element={<Login setError={setError} setLoading={setLoading} navigate={navigate} setQuery={setQuery} setResults={setResults} setNewUser={setNewUser} />}
