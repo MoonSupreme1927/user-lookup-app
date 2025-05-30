@@ -8,7 +8,6 @@ app.use(cors());
 app.use(express.json());
 
 const User = require("./models/User"); // Make sure this path is correct
-const x = require("side-channel-map");
 
 // MongoDB connection
 mongoose
@@ -17,12 +16,18 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+    process.exit();
+  });
 
 // Search users
 app.get("/search", async (req, res) => {
+  console.log("req: ", req);
   const { query } = req.query;
-  if (!query) return res.json([]);
+  if (!query)
+    return res.status(200).json({ error: "Nothing entered to search" });
+
   try {
     const results = await User.find({
       $or: [
@@ -34,7 +39,7 @@ app.get("/search", async (req, res) => {
     res.json(results);
   } catch (err) {
     console.error("Search failed:", err);
-    res.status(500).json({ error: "Search error" });
+    res.status(500).json({ error: `Search error: ${err}` });
   }
 });
 
@@ -42,7 +47,7 @@ app.get("/search", async (req, res) => {
 app.post("/add", async (req, res) => {
   try {
     const { name, email, phone } = req.body;
-    const newUser = new User({ name, email, phone });
+    const newUser = new User({ name: name, email: email, phone: phone });
     console.log("newUser: ", newUser);
     await newUser.save();
     res.status(201).json({ message: "User added successfully!" });
@@ -57,7 +62,7 @@ app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });

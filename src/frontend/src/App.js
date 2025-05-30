@@ -1,16 +1,16 @@
-import Home from './Home';
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './App.css';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import UserDetail from './UserDetail';
+import Home from "./Home";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./App.css";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import UserDetail from "./UserDetail";
 
 function App() {
   const [loading, setLoading] = useState(false);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
-  const [newUser, setNewUser] = useState({ name: '', email: '', phone: '' });
+  const [newUser, setNewUser] = useState({ name: "", email: "", phone: "" });
   const [darkMode, setDarkMode] = useState(false);
 
   const navigate = useNavigate();
@@ -29,11 +29,13 @@ function App() {
     setError(null);
     setLoading(true);
     try {
-      const response = await axios.get(`https://user-lookup-app.onrender.com/search?query=${searchTerm}`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/search?query=${searchTerm}`
+      );
       setResults(response.data);
     } catch (err) {
-      console.error('API call failed:', err);
-      setError('Error loading data');
+      console.error("API call failed:", err);
+      setError("Error loading data");
     } finally {
       setLoading(false);
     }
@@ -51,21 +53,27 @@ function App() {
     setError(null);
     setLoading(true);
     try {
-      await axios.post('https://user-lookup-app.onrender.com/add', newUser);
-      const response = await axios.get(`https://user-lookup-app.onrender.com/search?query=${newUser.name}`);
+      console.log(
+        "process.env.REACT_APP_API_URL: ",
+        process.env.REACT_APP_API_URL
+      );
+      await axios.post(`${process.env.REACT_APP_API_URL}/add`, newUser);
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/search?query=${newUser.name}`
+      );
       setResults(response.data);
-      setNewUser({ name: '', email: '', phone: '' });
+      setNewUser({ name: "", email: "", phone: "" });
       setQuery(newUser.name);
     } catch (err) {
-      console.error('Add user failed:', err);
-      setError('Failed to add user');
+      console.error("Add user failed:", err);
+      setError("Failed to add user");
     } finally {
       setLoading(false);
     }
   };
 
   const handleClear = () => {
-    setQuery('');
+    setQuery("");
     setResults([]);
     setError(null);
   };
@@ -75,7 +83,7 @@ function App() {
       <div className="banner">
         User Lookup Tool
         <button className="dark-toggle" onClick={() => setDarkMode(!darkMode)}>
-          {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+          {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
         </button>
       </div>
 
