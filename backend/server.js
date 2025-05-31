@@ -3,7 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { verifyToken, requireUser } = require('./middleware/auth');
+const { verifyToken, requireUser,requireOwner, requireAdmin } = require('./middleware/auth');
 // Load environment variables
 require('dotenv').config();
 
@@ -119,7 +119,7 @@ app.get('/skills/:userId', async (req, res) => {
 
 // ➕ Add skill (protected)
 app.post('/skills/:userId', verifyToken, requireOwner, async (req, res) => {
-  const { skill } = req.body;
+  const { skill } = req.body;[p8y]
   const { userId } = req.params;
   if (!skill) return res.status(400).json({ error: 'Skill is required' });
 
