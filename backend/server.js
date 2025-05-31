@@ -27,11 +27,19 @@ mongoose.connect(process.env.MONGO_URI, {
 app.post('/signup', async (req, res) => {
   try {
     const { name, email, phone, password } = req.body;
-    const existingUser = await User.findOne({ email });
+    const lowerEmail = email.toLowerCase();
+
+    const existingUser = await User.findOne({ email: lowerEmail });
     if (existingUser) return res.status(409).json({ error: 'User already exists' });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, email, phone, password: hashedPassword });
+    const newUser = new User({
+      name,
+      email: lowerEmail,
+      phone,
+      password: hashedPassword,
+    });
+
     await newUser.save();
 
     // Create empty skill document on signup
@@ -49,7 +57,7 @@ app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -76,7 +84,7 @@ app.get('/dashboard', verifyToken, requireUser, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
-// 🛠️ Admin Routes
+
 
 // 🧾 Public Routes
 app.get('/search', async (req, res) => {
