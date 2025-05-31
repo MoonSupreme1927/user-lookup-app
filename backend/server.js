@@ -10,7 +10,7 @@ require('dotenv').config();
 
 const User = require('./models/User');
 const Skill = require('./models/Skill');
-const { verifyToken, requireUser, requireAdmin, requireOwner } = require('./middleware/auth');
+//const { verifyToken, requireUser, requireAdmin, requireOwner } = require('./middleware/auth');
 
 const app = express();
 app.use(cors());
