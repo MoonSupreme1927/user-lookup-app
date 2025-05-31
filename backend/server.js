@@ -3,7 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { verifyToken, requireUser,requireOwner, requireAdmin } = require('./middleware/auth');
+const { verifyToken, requireUser,requireAdmin, requireOwner, } = require('./middleware/auth');
 // Load environment variables
 require('dotenv').config();
 
