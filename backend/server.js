@@ -28,18 +28,11 @@ app.post('/signup', async (req, res) => {
   try {
     const { name, email, phone, password } = req.body;
     const lowerEmail = email.toLowerCase();
-
-    const existingUser = await User.findOne({ email: lowerEmail });
+    const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(409).json({ error: 'User already exists' });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({
-      name,
-      email: lowerEmail,
-      phone,
-      password: hashedPassword,
-    });
-
+    const newUser = new User({ name, email: req.body.email.toLowerCase(), phone, password: hashedPassword });
     await newUser.save();
 
     // Create empty skill document on signup
