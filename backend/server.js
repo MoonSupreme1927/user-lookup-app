@@ -116,6 +116,35 @@ app.get('/skills/:userId', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+app.post('/vote/:bookId', verifyToken, async (req, res) => {
+  try {
+    const book = await Book.findByIdAndUpdate(
+      req.params.bookId,
+      { $inc: { votes: 1 } },
+      { new: true }
+    );
+
+    if (!book) return res.status(404).json({ error: 'Book not found' });
+    res.json({ message: 'Vote recorded!', book });
+  } catch (err) {
+    console.error('Vote error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+const Book = require('./models/Book'); // adjust path if needed
+
+app.get('/books', verifyToken, async (req, res) => {
+  try {
+    const books = await Book.find(); // optionally add sorting or filters
+    res.json(books);
+  } catch (err) {
+    console.error('Book fetch error:', err);
+    res.status(500).json({ error: 'Failed to fetch books' });
+  }
+});
+
 
 // ➕ Add skill (protected)
 app.post('/skills/:userId', verifyToken, requireOwner, async (req, res) => {

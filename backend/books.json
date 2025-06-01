@@ -1,0 +1,82 @@
+{
+    "books": [
+      {
+        "id": 1,
+        "title": "The Wife Before",
+        "author": "Shanora Williams",
+        "publishedYear": 2021,
+        "genre": "Thriller"
+      },
+      {
+        "id": 2,
+        "title": "Take My Hand",
+        "author": "Dolen Perkins-Valdez",
+        "publishedYear": 2022,
+        "genre": "Historical Fiction"
+      },
+      {
+        "id": 3,
+        "title": "An American Marriage",
+        "author": "Tayari Jones",
+        "publishedYear": 2018,
+        "genre": "Literary Fiction"
+      },
+      {
+        "id": 4,
+        "title": "If You Tell A Lie",
+        "author": "Kelly Rimmer",
+        "publishedYear": 2022,
+        "genre": "Thriller"
+      },
+      {
+        "id": 5,
+        "title": "Their Eyes Were Watching God",
+        "author": "Zora Neale Hurston",
+        "publishedYear": 1937,
+        "genre": "Literary Fiction"
+      },
+      {
+        "id": 6,
+        "title": "A Tangled Web",
+        "author": "Nicholas Blake",
+        "publishedYear": 1956,
+        "genre": "Crime Fiction"
+      },
+      {
+        "id": 7,
+        "title": "Deacon King Kong",
+        "author": "James McBride",
+        "publishedYear": 2020,
+        "genre": "Literary Fiction"
+      },
+      {
+        "id": 8,
+        "title": "As The Wicked Watched",
+        "author": "Tamron Hall",
+        "publishedYear": 2021,
+        "genre": "Mystery"
+      },
+      {
+        "id": 9,
+        "title": "Watch Where They Hide",
+        "author": "Tamron Hall",
+        "publishedYear": 2023,
+        "genre": "Mystery"
+      },
+      {
+        "id": 10,
+        "title": "Verity",
+        "author": "Colleen Hoover",
+        "publishedYear": 2018,
+        "genre": "Psychological Thriller"
+      },
+      {
+        "id": 11,
+        "title": "The Vanishing Half",
+        "author": "Brit Bennett",
+        "publishedYear": 2020,
+        "genre": "Historical Fiction"
+      }
+    ]
+  }
+  

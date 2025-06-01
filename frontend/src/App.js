@@ -113,7 +113,7 @@ function App() {
         />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/usersdetails/:id" element={<UserDetail />} />
+        <Route path="/UserDetails/:id" element={<UserDetail />} />
       </Routes>
     </div>
   );
