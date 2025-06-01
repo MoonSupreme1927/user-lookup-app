@@ -10,7 +10,9 @@ require('dotenv').config();
 
 const User = require('./models/User');
 const Skill = require('./models/Skill');
+const Book = require('./models/Book');
 
+// Initialize Express app
 const app = express();
 app.use(cors());
 app.use(express.json());
