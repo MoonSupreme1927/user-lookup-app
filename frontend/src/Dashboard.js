@@ -14,7 +14,7 @@ const Dashboard = () => {
     if (!token) return setError('You must be logged in to view this page.');
 
     axios
-      .get('https://user-lookup-app-frontend.onrender.com/dashboard', {
+      .get('https://user-lookup-app.onrender.com/dashboard', {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setUser(res.data.user))
