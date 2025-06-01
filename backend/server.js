@@ -10,7 +10,6 @@ require('dotenv').config();
 
 const User = require('./models/User');
 const Skill = require('./models/Skill');
-//const { verifyToken, requireUser, requireAdmin, requireOwner } = require('./middleware/auth');
 
 const app = express();
 app.use(cors());
@@ -133,8 +132,6 @@ app.post('/vote/:bookId', verifyToken, async (req, res) => {
 });
 
 
-const Book = require('./models/Book'); // adjust path if needed
-
 app.get('/books', verifyToken, async (req, res) => {
   try {
     const books = await Book.find(); // optionally add sorting or filters
@@ -148,7 +145,7 @@ app.get('/books', verifyToken, async (req, res) => {
 
 // ➕ Add skill (protected)
 app.post('/skills/:userId', verifyToken, requireOwner, async (req, res) => {
-  const { skill } = req.body;[p8y]
+  const { skill } = req.body;
   const { userId } = req.params;
   if (!skill) return res.status(400).json({ error: 'Skill is required' });
 
