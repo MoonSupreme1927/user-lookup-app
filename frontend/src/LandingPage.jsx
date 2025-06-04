@@ -33,12 +33,13 @@ const LandingPage = () => {
         <div style={styles.bookClubBox}>
           <p>Join our monthly book club and share your recommendations!</p>
           <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSeZzUQJGOOGLEFORMURL/viewform"
+            href="https://forms.gle/G6YePNbouUcQTJZB8"
             target="_blank"
             rel="noopener noreferrer"
-            style={styles.bookClubLink}
+            className="suggestion-button"
+            style={{ textDecoration: 'none', color: 'inherit', padding: '0.5rem 1rem', backgroundColor: '#f0f0f0', borderRadius: '5px' }}
           >
-            Suggest a Book →
+              📖 Suggest a Book →
           </a>
         </div>
       </section>
