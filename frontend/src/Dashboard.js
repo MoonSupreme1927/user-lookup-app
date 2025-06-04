@@ -132,10 +132,10 @@ const Dashboard = () => {
         )}
         <div style={styles.buttonGroup}>
           <a href="https://www.amazon.com/dp/0525536299/?bestFormat=true&k=the%20vanishing%20half&ref_=nb_sb_ss_w_scx-ent-pd-bk-d_de_k0_1_9&crid=1YZ7EA9TYXNNH&sprefix=the%20vanis" target="_blank" rel="noopener noreferrer">
-            <button style={{ background: 'none', border: '2px solid orange', color: 'orange', padding: '0.5rem 1rem', borderRadius: '5px', cursor: 'pointer' }}>$1 📗 GET HARD COPY</button>
+            <button style={{ background: 'none', border: '2px solid orange', color: 'orange', padding: '0.5rem 1rem', borderRadius: '5px', cursor: 'pointer' }}>📗 GET HARD COPY</button>
           </a>
           <a href="https://www.audible.com/pd/0525637141?source_code=ORGOR69210072400FU" target="_blank" rel="noopener noreferrer">
-          <button style={{ background: 'none', border: '2px solid orange', color: 'orange', padding: '0.5rem 1rem', borderRadius: '5px', cursor: 'pointer' }}>$1 🎧 GET AUDIO BOOK</button>
+          <button style={{ background: 'none', border: '2px solid orange', color: 'orange', padding: '0.5rem 1rem', borderRadius: '5px', cursor: 'pointer' }}> 🎧 GET AUDIO BOOK</button>
           </a>
         </div>
       </div>
@@ -179,13 +179,27 @@ const Dashboard = () => {
 
       <div className="vote-banner" style={styles.voteBanner}>
         <a
-          href="https://docs.google.com/forms/d/1hD0ojVkqI2MDuPKgwG5I5f6ILroe1WJ_euVlp_n0LlQ"
+          href="https://forms.gle/sx5vYqxfNYpdNrhd9"
           target="_blank"
           rel="noopener noreferrer"
           className="vote-button"
         >
           🗳️ Vote for Book of the Month
         </a>
+      </div>
+
+      <div
+      className='book-club-suggestions' style={styles.bookMonth}>
+      <h2>📚 Book Club Suggestions</h2>
+          <a
+            href="https://forms.gle/G6YePNbouUcQTJZB8"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="suggestion-button"
+            style={{ textDecoration: 'none', color: 'inherit', padding: '0.5rem 1rem', backgroundColor: '#f0f0f0', borderRadius: '5px' }}
+          >
+            Suggest a Book →
+          </a>
       </div>
 
       <div className="skills-section" style={{ marginTop: '2rem' }}>
