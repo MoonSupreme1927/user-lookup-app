@@ -11,4 +11,3 @@ export const addSkillToUser = (id, skill) =>
 
 export const removeSkillFromUser = (id, skill) =>
   axios.delete(`${API_BASE}/skills/${id}/${skill}`);
-export const fetchBooks = () => axios.get(`${API_BASE}/books`); 
