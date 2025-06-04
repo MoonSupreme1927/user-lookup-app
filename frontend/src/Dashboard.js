@@ -5,8 +5,7 @@ import {
   ResponsiveContainer, Legend, LabelList
 } from 'recharts';
 import './Dashboard.css';
-import './UserDetail'
-
+import '../src/services/dashboardService';
 const Dashboard = () => {
   const [books, setBooks] = useState([]);
   const [error, setError] = useState(null);
