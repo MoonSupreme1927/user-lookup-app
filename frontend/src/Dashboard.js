@@ -122,9 +122,11 @@ const Dashboard = () => {
       <div className="book-of-month" style={styles.bookMonth}>
         <h2>📘 Book of the Month</h2>
         {bookOfTheMonth ? (
-          <p>The Vanishing Half<strong>{bookOfTheMonth.title}</strong> by Brit Bennett {bookOfTheMonth.author}</p>
+          <p><strong>{bookOfTheMonth.title}The Vanishing Half</strong> {bookOfTheMonth.author}by Brit Bennett
+          <h3>#NEW YORK BESTSELLER!!</h3>
+          </p>
         ) : (
-          <p>#1 NEW YORK BESTSELLER!!</p>
+          <p></p>
         )}
         <div style={styles.buttonGroup}>
           <a href="https://www.amazon.com/dp/0525536299/?bestFormat=true&k=the%20vanishing%20half&ref_=nb_sb_ss_w_scx-ent-pd-bk-d_de_k0_1_9&crid=1YZ7EA9TYXNNH&sprefix=the%20vanis" target="_blank" rel="noopener noreferrer">
@@ -233,6 +235,10 @@ const styles = {
     marginTop: '2rem'
   },
   buttonGroup: {
+    color: 'white',
+    backgroundColor: '#ed0707',
+    padding: '1rem',
+    borderRadius: '8px',
     display: 'flex',
     justifyContent: 'center',
     gap: '1rem',
