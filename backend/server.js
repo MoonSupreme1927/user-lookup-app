@@ -7,6 +7,27 @@ const { verifyToken, requireUser, requireAdmin, requireOwner, } = require('./mid
 // Load environment variables
 require('dotenv').config();
 
+const IPQS_API_KEY = process.env.IPQS_API_KEY;
+
+const axios = require('axios');
+
+const emailValid = await axios.get(`https://ipqualityscore.com/api/json/email/${IPQS_API_KEY}/${email}`);
+const phoneValid = await axios.get(`https://ipqualityscore.com/api/json/phone/${IPQS_API_KEY}/${phone}`);
+
+console.log('IPQS Email Check:', emailValid.data);
+console.log('IPQS Phone Check:', phoneValid.data);
+
+if (!emailValid.data.valid || emailValid.data.disposable) {
+  return res.status(400).json({ error: 'Invalid or disposable email.' });
+}
+if (!phoneValid.data.valid || phoneValid.data.active !== true) {
+  return res.status(400).json({ error: 'Invalid or inactive phone number.' });
+}
+
+
+// Import models
+
+
 
 const User = require('./models/User');
 const Skill = require('./models/Skill');
