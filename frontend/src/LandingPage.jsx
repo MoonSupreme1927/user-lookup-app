@@ -14,15 +14,17 @@ const LandingPage = () => {
       <section style={styles.podcastSection}>
         <h2>🎧 Featured Podcast: Black Chick Lit</h2>
         <p>A bi-monthly podcast celebrating Black women in literature through humor, heart, and honest conversation.</p>
-        <iframe style={styles.iframe}
-          src="https://open.spotify.com/show/31eNbMztkfu2h43Rd4OuI4?utm_source=generator&theme=0"
-          width="100%"
-          height="232"
-          frameBorder="0"
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-          loading="lazy"
-          title="Black Chick Lit Podcast"
-        ></iframe>
+        <iframe
+  style={styles.iframe}
+  src="https://open.spotify.com/embed/show/31eNbMztkfu2h43Rd4OuI4?utm_source=generator"
+  width="100%"
+  height="232"
+  frameBorder="0"
+  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+  loading="lazy"
+  title="Podcast Embed"
+/>
+
       </section>
 
       {/* Book Club Section */}
@@ -87,6 +89,7 @@ const styles = {
     marginTop: '1rem',
     padding: '1rem',
     backgroundColor: '#ff6b6b',
+    backgroundSize: 'cover',
     borderRadius: '8px',
     maxWidth: '500px',
     margin: '1rem auto',
