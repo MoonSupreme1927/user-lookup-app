@@ -7,7 +7,9 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-  ResponsiveContainer
+  ResponsiveContainer,
+  Legend,
+  LabelList
 } from 'recharts';
 import './Dashboard.css';
 
@@ -117,23 +119,21 @@ const Dashboard = () => {
 
   return user ? (
     <div className="dashboard">
-      <div className="vote-banner" style={styles.voteBanner}>
-        <h2>📘 Book of the Month </h2>
-        <a>
-        </a>
+      <div className="book-of-month" style={styles.bookMonth}>
+        <h2>📘 Book of the Month</h2>
         {bookOfTheMonth ? (
-          <p>The Vanishing Half<strong>{bookOfTheMonth.title}</strong> by Brit Bennet {bookOfTheMonth.author}</p>
+          <p><strong>{bookOfTheMonth.title}</strong> by {bookOfTheMonth.author}</p>
         ) : (
-          <p>Current Chapters: 1 - 3</p>
+          <p>No votes yet.</p>
         )}
-        <a
-          href="https://docs.google.com/forms/d/1hD0ojVkqI2MDuPKgwG5I5f6ILroe1WJ_euVlp_n0LlQ"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="vote-button"
-        >
-          🗳️ Vote for Book of the Month
-        </a>
+        <div style={styles.buttonGroup}>
+          <a href="https://www.amazon.com/dp/0525536299/?bestFormat=true&k=the%20vanishing%20half&ref_=nb_sb_ss_w_scx-ent-pd-bk-d_de_k0_1_9&crid=1YZ7EA9TYXNNH&sprefix=the%20vanis" target="_blank" rel="noopener noreferrer">
+            <button>📗 GET HARD COPY</button>
+          </a>
+          <a href="https://www.audible.com/pd/0525637141?source_code=ORGOR69210072400FU" target="_blank" rel="noopener noreferrer">
+            <button>🎧 GET AUDIO BOOK</button>
+          </a>
+        </div>
       </div>
 
       <div className="club-stats" style={styles.statsContainer}>
@@ -142,12 +142,15 @@ const Dashboard = () => {
           <div style={styles.statSection}>
             <h4>Total Books Read</h4>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={books}>
+              <BarChart data={books} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="title" />
+                <XAxis dataKey="title" angle={-45} textAnchor="end" interval={0} height={60} />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="readcount" fill="#82ca9d" />
+                <Legend />
+                <Bar dataKey="readCount" fill="#82ca9d">
+                  <LabelList dataKey="readCount" position="top" />
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -155,16 +158,30 @@ const Dashboard = () => {
           <div style={styles.statSection}>
             <h4>Books by Genre</h4>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={booksByGenreData}>
+              <BarChart data={booksByGenreData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="genre" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="count" fill="#8884d8" />
+                <Legend />
+                <Bar dataKey="count" fill="#8884d8">
+                  <LabelList dataKey="count" position="top" />
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
+      </div>
+
+      <div className="vote-banner" style={styles.voteBanner}>
+        <a
+          href="https://docs.google.com/forms/d/1hD0ojVkqI2MDuPKgwG5I5f6ILroe1WJ_euVlp_n0LlQ"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="vote-button"
+        >
+          🗳️ Vote for Book of the Month
+        </a>
       </div>
 
       <div className="skills-section" style={{ marginTop: '2rem' }}>
@@ -198,7 +215,7 @@ const Dashboard = () => {
         )}
       </div>
 
-      <div className="welcome-section" style={{ marginTop: '1rem' }}>
+      <div className="welcome-section" style={{  maringCenter: '1rem', marginTop: '1rem' }}>
         <h2>Welcome, {user.name}!</h2>
         <p><strong>Email:</strong> {user.email}</p>
         <p><strong>Phone:</strong> {user.phone}</p>
@@ -211,6 +228,16 @@ const Dashboard = () => {
 };
 
 const styles = {
+  bookMonth: {
+    textAlign: 'center',
+    marginTop: '2rem'
+  },
+  buttonGroup: {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '1rem',
+    marginTop: '1rem'
+  },
   voteBanner: {
     textAlign: 'center',
     marginTop: '2rem'
@@ -230,5 +257,3 @@ const styles = {
 };
 
 export default Dashboard;
-// This code defines a dashboard for a user lookup application that displays user information, book statistics, and allows users to manage their skills.
-// It includes features like voting for a book of the month, viewing club stats, and adding/removing skills.
