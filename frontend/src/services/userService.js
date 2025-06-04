@@ -10,4 +10,4 @@ export const addSkillToUser = (id, skill) =>
   axios.post(`${API_BASE}/skills/${id}`, { skill });
 
 export const removeSkillFromUser = (id, skill) =>
-  axios.delete(`${API_BASE}/skills/${id}/${skill}`);
+  axios.delete(`${API_BASE}/skills/${id}/${skill}`);    
