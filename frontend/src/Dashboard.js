@@ -121,19 +121,21 @@ const Dashboard = () => {
     <div className="dashboard">
       <div className="book-of-month" style={styles.bookMonth}>
         <h2>📘 Book of the Month</h2>
+        <h2>The Vanishing Half</h2>
+        <p>by Brit Bennett</p>
+        <p>📖 A multi-generational family saga about two twin sisters who choose to live in two different worlds.</p>
+        <h2>#NEW YORK BESTSELLER!!</h2>
         {bookOfTheMonth ? (
-          <p><strong>{bookOfTheMonth.title}The Vanishing Half</strong> {bookOfTheMonth.author}by Brit Bennett
-          <h3>#NEW YORK BESTSELLER!!</h3>
-          </p>
+          <p><strong>{bookOfTheMonth.title}</strong> {bookOfTheMonth.author}by</p>
         ) : (
           <p></p>
         )}
         <div style={styles.buttonGroup}>
           <a href="https://www.amazon.com/dp/0525536299/?bestFormat=true&k=the%20vanishing%20half&ref_=nb_sb_ss_w_scx-ent-pd-bk-d_de_k0_1_9&crid=1YZ7EA9TYXNNH&sprefix=the%20vanis" target="_blank" rel="noopener noreferrer">
-            <button>📗 GET HARD COPY</button>
+            <button style={{ background: 'none', border: '2px solid orange', color: 'orange', padding: '0.5rem 1rem', borderRadius: '5px', cursor: 'pointer' }}>$1 📗 GET HARD COPY</button>
           </a>
           <a href="https://www.audible.com/pd/0525637141?source_code=ORGOR69210072400FU" target="_blank" rel="noopener noreferrer">
-            <button>🎧 GET AUDIO BOOK</button>
+          <button style={{ background: 'none', border: '2px solid orange', color: 'orange', padding: '0.5rem 1rem', borderRadius: '5px', cursor: 'pointer' }}>$1 🎧 GET AUDIO BOOK</button>
           </a>
         </div>
       </div>
@@ -235,10 +237,6 @@ const styles = {
     marginTop: '2rem'
   },
   buttonGroup: {
-    color: 'white',
-    backgroundColor: '#ed0707',
-    padding: '1rem',
-    borderRadius: '8px',
     display: 'flex',
     justifyContent: 'center',
     gap: '1rem',
