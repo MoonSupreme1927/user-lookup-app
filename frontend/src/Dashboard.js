@@ -1,23 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-  Legend,
-  LabelList
+  BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid,
+  ResponsiveContainer, Legend, LabelList
 } from 'recharts';
 import './Dashboard.css';
+import './UserDetail'
 
 const Dashboard = () => {
-  const [user, setUser] = useState(null);
   const [books, setBooks] = useState([]);
-  const [skills, setSkills] = useState([]);
-  const [newSkill, setNewSkill] = useState('');
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -27,31 +18,19 @@ const Dashboard = () => {
       return;
     }
 
-    const fetchData = async () => {
+    const fetchBooks = async () => {
       try {
-        const userRes = await axios.get('https://user-lookup-app.onrender.com/dashboard', {
+        const booksRes = await axios.get('https://user-lookup-app.onrender.com/books', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setUser(userRes.data.user);
-
-        const [booksRes, skillsRes] = await Promise.all([
-          axios.get('https://user-lookup-app.onrender.com/books', {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          axios.get(`https://user-lookup-app.onrender.com/skills/${userRes.data.user._id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-        ]);
-
         setBooks(booksRes.data);
-        setSkills(skillsRes.data.skills);
       } catch (err) {
         console.error(err);
         setError('Access denied or session expired.');
       }
     };
 
-    fetchData();
+    fetchBooks();
   }, []);
 
   const handleVote = async (bookId) => {
@@ -68,35 +47,6 @@ const Dashboard = () => {
       );
     } catch (err) {
       console.error('Vote failed:', err);
-    }
-  };
-
-  const handleAddSkill = async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem('token');
-    try {
-      const { data } = await axios.post(
-        `https://user-lookup-app.onrender.com/skills/${user._id}`,
-        { skill: newSkill },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setSkills(data.skills);
-      setNewSkill('');
-    } catch (err) {
-      console.error('Add skill error:', err);
-    }
-  };
-
-  const handleDeleteSkill = async (skill) => {
-    const token = localStorage.getItem('token');
-    try {
-      const { data } = await axios.delete(
-        `https://user-lookup-app.onrender.com/skills/${user._id}/${skill}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setSkills(data.skills);
-    } catch (err) {
-      console.error('Delete skill error:', err);
     }
   };
 
@@ -117,25 +67,24 @@ const Dashboard = () => {
 
   if (error) return <p className="error">{error}</p>;
 
-  return user ? (
+  return (
     <div className="dashboard">
+      <button className="btn-secondary" onClick={() => navigate('/UserDetail')}>📊 User Profile</button>
       <div className="book-of-month" style={styles.bookMonth}>
         <h2>📘 Book of the Month</h2>
         <h2>The Vanishing Half</h2>
         <p>by Brit Bennett</p>
         <p>📖 A multi-generational family saga about two twin sisters who choose to live in two different worlds.</p>
         <h2>#NEW YORK BESTSELLER!!</h2>
-        {bookOfTheMonth ? (
-          <p><strong>{bookOfTheMonth.title}</strong> {bookOfTheMonth.author}by</p>
-        ) : (
-          <p></p>
+        {bookOfTheMonth && (
+          <p><strong>{bookOfTheMonth.title}</strong> by {bookOfTheMonth.author}</p>
         )}
         <div style={styles.buttonGroup}>
-          <a href="https://www.amazon.com/dp/0525536299/?bestFormat=true&k=the%20vanishing%20half&ref_=nb_sb_ss_w_scx-ent-pd-bk-d_de_k0_1_9&crid=1YZ7EA9TYXNNH&sprefix=the%20vanis" target="_blank" rel="noopener noreferrer">
-            <button style={{ background: 'none', border: '2px solid orange', color: 'orange', padding: '0.5rem 1rem', borderRadius: '5px', cursor: 'pointer' }}>📗 GET HARD COPY</button>
+          <a href="https://www.amazon.com/dp/0525536299" target="_blank" rel="noopener noreferrer">
+            <button style={styles.button}>📗 GET HARD COPY</button>
           </a>
-          <a href="https://www.audible.com/pd/0525637141?source_code=ORGOR69210072400FU" target="_blank" rel="noopener noreferrer">
-          <button style={{ background: 'none', border: '2px solid orange', color: 'orange', padding: '0.5rem 1rem', borderRadius: '5px', cursor: 'pointer' }}> 🎧 GET AUDIO BOOK</button>
+          <a href="https://www.audible.com/pd/0525637141" target="_blank" rel="noopener noreferrer">
+            <button style={styles.button}>🎧 GET AUDIO BOOK</button>
           </a>
         </div>
       </div>
@@ -188,60 +137,19 @@ const Dashboard = () => {
         </a>
       </div>
 
-      <div
-      className='book-club-suggestions' style={styles.bookMonth}>
-      <h2>📚 Book Club Suggestions</h2>
-          <a
-            href="https://forms.gle/G6YePNbouUcQTJZB8"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="suggestion-button"
-            style={{ textDecoration: 'none', color: 'inherit', padding: '0.5rem 1rem', backgroundColor: '#f0f0f0', borderRadius: '5px' }}
-          >
-           📖 Suggest a Book →
-          </a>
-      </div>
-
-      <div className="skills-section" style={{ marginTop: '2rem' }}>
-        <h3>🧠 Your Skills</h3>
-        <form onSubmit={handleAddSkill} style={{ marginBottom: '1rem' }}>
-          <input
-            type="text"
-            value={newSkill}
-            onChange={(e) => setNewSkill(e.target.value)}
-            placeholder="Add a new skill"
-          />
-          <button type="submit">➕ Add Skill</button>
-        </form>
-
-        {skills.length === 0 ? (
-          <p>No skills found.</p>
-        ) : (
-          <ul>
-            {skills.map((skill, index) => (
-              <li key={index}>
-                {skill}
-                <button
-                  onClick={() => handleDeleteSkill(skill)}
-                  style={{ marginLeft: '1rem', color: 'red' }}
-                >
-                  ❌ Delete
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      <div className="welcome-section" style={{  maringCenter: '1rem', marginTop: '1rem' }}>
-        <h2>Welcome, {user.name}!</h2>
-        <p><strong>Email:</strong> {user.email}</p>
-        <p><strong>Phone:</strong> {user.phone}</p>
-        <p><strong>Role:</strong> {user.role || 'user'}</p>
+      <div className="book-club-suggestions" style={styles.bookMonth}>
+        <h2>📚 Book Club Suggestions</h2>
+        <a
+          href="https://forms.gle/G6YePNbouUcQTJZB8"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="suggestion-button"
+          style={styles.suggestionButton}
+        >
+          📖 Suggest a Book →
+        </a>
       </div>
     </div>
-  ) : (
-    <p>Loading dashboard...</p>
   );
 };
 
@@ -255,6 +163,14 @@ const styles = {
     justifyContent: 'center',
     gap: '1rem',
     marginTop: '1rem'
+  },
+  button: {
+    background: 'none',
+    border: '2px solid orange',
+    color: 'orange',
+    padding: '0.5rem 1rem',
+    borderRadius: '5px',
+    cursor: 'pointer'
   },
   voteBanner: {
     textAlign: 'center',
@@ -271,7 +187,16 @@ const styles = {
   },
   statSection: {
     flex: '1 1 45%'
+  },
+  suggestionButton: {
+    textDecoration: 'none',
+    color: 'inherit',
+    padding: '0.5rem 1rem',
+    backgroundColor: '#f0f0f0',
+    borderRadius: '5px'
   }
 };
 
 export default Dashboard;
+// Dashboard.js
+// This component fetches and displays book club statistics, including the book of the month and various charts.

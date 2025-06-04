@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import {
+  fetchUserById,
+  fetchSkillsByUserId,
+  addSkillToUser,
+  removeSkillFromUser,
+} from '../services/userService';
 
 const UserDetail = () => {
   const { id } = useParams();
@@ -19,10 +24,9 @@ const UserDetail = () => {
     const fetchUserAndSkills = async () => {
       try {
         const [userRes, skillRes] = await Promise.all([
-          axios.get(`https://user-lookup-app.onrender.com/users/${id}`),
-          axios.get(`https://user-lookup-app.onrender.com/skills/${id}`),
+          fetchUserById(id),
+          fetchSkillsByUserId(id),
         ]);
-
         setUser(userRes.data);
         setSkills(skillRes.data.skills || []);
       } catch (err) {
@@ -41,9 +45,7 @@ const UserDetail = () => {
     if (!trimmed || skills.includes(trimmed)) return setNewSkill('');
 
     try {
-      const res = await axios.post(`https://user-lookup-app.onrender.com/skills/${id}`, {
-        skill: trimmed,
-      });
+      const res = await addSkillToUser(id, trimmed);
       setSkills(res.data.skills);
       setNewSkill('');
     } catch (err) {
@@ -53,9 +55,7 @@ const UserDetail = () => {
 
   const handleRemoveSkill = async (skillToRemove) => {
     try {
-      const res = await axios.delete(
-        `https://user-lookup-app.onrender.com/skills/${id}/${skillToRemove}`
-      );
+      const res = await removeSkillFromUser(id, skillToRemove);
       setSkills(res.data.skills);
     } catch (err) {
       console.error('Failed to remove skill:', err);
@@ -91,7 +91,10 @@ const UserDetail = () => {
                 <li key={idx}>
                   {skill}
                   {isOwner && (
-                    <button onClick={() => handleRemoveSkill(skill)} className="remove-skill-btn">
+                    <button
+                      onClick={() => handleRemoveSkill(skill)}
+                      className="remove-skill-btn"
+                    >
                       ❌
                     </button>
                   )}

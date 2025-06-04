@@ -113,9 +113,18 @@ function App() {
           path="/dashboard"
           element={<Dashboard setError={setError} setLoading={setLoading} navigate={navigate} />}
         />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/UserDetails/:id" element={<UserDetail />} />
+        <Route path="/reset-password/:token" 
+        element={<ResetPassword setError={setError} setLoading={setLoading} navigate={navigate} />} />
+
+
+        <Route path="/forgot-password" 
+        element={<ForgotPassword setError={setError} setLoading={setLoading} navigate={navigate} />} />
+
+
+        <Route path="/UserDetails/:id" 
+        element={<UserDetail setError={setError} setLoading={setLoading} navigate={navigate} />}
+        
+        />
       </Routes>
     </div>
   );

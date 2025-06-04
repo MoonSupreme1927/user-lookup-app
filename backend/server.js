@@ -184,6 +184,26 @@ app.get('/users/:id', async (req, res) => {
   }
 });
 
+app.put('/users/:id', verifyToken, requireOwner, async (req, res) => {
+  const { id } = req.params;
+  const { name, email, phone } = req.body;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { name, email: email.toLowerCase(), phone },
+      { new: true }
+    ).select('-password');
+
+    if (!updatedUser) return res.status(404).json({ error: 'User not found' });
+    res.json({ message: 'Profile updated', user: updatedUser });
+  } catch (err) {
+    console.error('Profile update error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
 app.get('/skills/:userId', async (req, res) => {
   try {
     const skills = await Skill.findOne({ userId: req.params.userId });
