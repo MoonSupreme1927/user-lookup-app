@@ -15,7 +15,7 @@ const LandingPage = () => {
         <h2>🎧 Featured Podcast: Black Chick Lit</h2>
         <p>A bi-monthly podcast celebrating Black women in literature through humor, heart, and honest conversation.</p>
         <iframe style={styles.iframe}
-          src="https://open.spotify.com/embed/show/4M3p2cLhTNB0IJrRyXMz5Y?utm_source=generator"
+          src="https://open.spotify.com/show/31eNbMztkfu2h43Rd4OuI4?utm_source=generator&theme=0"
           width="100%"
           height="232"
           frameBorder="0"
@@ -86,7 +86,7 @@ const styles = {
   bookClubBox: {
     marginTop: '1rem',
     padding: '1rem',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#ff6b6b',
     borderRadius: '8px',
     maxWidth: '500px',
     margin: '1rem auto',

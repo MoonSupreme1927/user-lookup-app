@@ -67,8 +67,8 @@ function App() {
         </form>
 
         <div className="banner-buttons">
-          <button className="btn-secondary" onClick={() => navigate('/login')}>🔐 Login</button>
           <button className="btn-secondary" onClick={() => navigate('/signup')}>📝 Sign Up</button>
+          <button className="btn-secondary" onClick={() => navigate('/login')}>🔐 Login</button>
           <button className="btn-secondary" onClick={() => navigate('/dashboard')}>📊 Dashboard</button>
           <button className="btn-secondary" onClick={handleLogout}>🚪 Logout</button>
         </div>
@@ -108,7 +108,7 @@ function App() {
             />
           }
         />
-        
+
         <Route
           path="/dashboard"
           element={<Dashboard setError={setError} setLoading={setLoading} navigate={navigate} />}
