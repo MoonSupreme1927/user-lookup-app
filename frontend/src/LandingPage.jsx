@@ -86,14 +86,14 @@ const styles = {
     height: '232px'
   },
   bookClubBox: {
-    marginTop: '1rem',
-    padding: '1rem',
+    backgroundSize: '600% 600%',
     backgroundColor: '#ff6b6b',
-    backgroundSize: 'cover',
-    borderRadius: '8px',
-    maxWidth: '500px',
-    margin: '1rem auto',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    animation: 'flash 10s ease infinite',
+    padding: '2rem',
+    marginTop: '2rem',
+    borderRadius: '12px',
+    color: '#fff',
+    textAlign: 'center',
   },
   bookClubLink: {
     marginTop: '1rem',
