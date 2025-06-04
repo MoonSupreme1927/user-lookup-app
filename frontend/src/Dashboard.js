@@ -118,11 +118,13 @@ const Dashboard = () => {
   return user ? (
     <div className="dashboard">
       <div className="vote-banner" style={styles.voteBanner}>
-        <h2>📘 Book of the Month:</h2>
+        <h2>📘 Book of the Month </h2>
+        <a>
+        </a>
         {bookOfTheMonth ? (
-          <p><strong>{bookOfTheMonth.title}</strong> by {bookOfTheMonth.author}</p>
+          <p>The Vanishing Half<strong>{bookOfTheMonth.title}</strong> by Brit Bennet {bookOfTheMonth.author}</p>
         ) : (
-          <p>No votes yet.</p>
+          <p>Current Chapters: 1 - 3</p>
         )}
         <a
           href="https://docs.google.com/forms/d/1hD0ojVkqI2MDuPKgwG5I5f6ILroe1WJ_euVlp_n0LlQ"
