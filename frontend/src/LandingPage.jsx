@@ -59,7 +59,7 @@ const styles = {
     color: '#333',
   },
   banner: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#ed0707',
     color: 'white',
     padding: '2rem',
     textAlign: 'center',
@@ -86,14 +86,21 @@ const styles = {
     height: '232px'
   },
   bookClubBox: {
-    backgroundSize: '600% 600%',
     backgroundColor: '#ff6b6b',
-    animation: 'flash 10s ease infinite',
     padding: '2rem',
     marginTop: '2rem',
     borderRadius: '12px',
     color: '#fff',
     textAlign: 'center',
+    width: '100%',
+  },
+  joinClubBox: {
+    backgroundColor: '#feca57',
+    padding: '2rem',
+    marginTop: '2rem',
+    borderRadius: '12px',
+    textAlign: 'center',
+    width: '100%',
   },
   bookClubLink: {
     marginTop: '1rem',

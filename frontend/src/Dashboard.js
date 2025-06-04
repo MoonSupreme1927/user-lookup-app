@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import {
   BarChart,
   Bar,
@@ -17,10 +16,7 @@ const Dashboard = () => {
   const [books, setBooks] = useState([]);
   const [skills, setSkills] = useState([]);
   const [newSkill, setNewSkill] = useState('');
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -29,7 +25,7 @@ const Dashboard = () => {
       return;
     }
 
-    const fetchUserBooksSkills = async () => {
+    const fetchData = async () => {
       try {
         const userRes = await axios.get('https://user-lookup-app.onrender.com/dashboard', {
           headers: { Authorization: `Bearer ${token}` },
@@ -53,7 +49,7 @@ const Dashboard = () => {
       }
     };
 
-    fetchUserBooksSkills();
+    fetchData();
   }, []);
 
   const handleVote = async (bookId) => {
@@ -102,63 +98,25 @@ const Dashboard = () => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('loggedInUser');
-    navigate('/login');
-  };
-
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-
-    try {
-      const res = await axios.get(
-        `https://user-lookup-app.onrender.com/search?query=${query}`
-      );
-      setResults(res.data);
-    } catch (err) {
-      console.error('Search error', err);
-    }
-  };
-
   const bookOfTheMonth = books.reduce(
     (top, b) => (b.votes > (top?.votes || 0) ? b : top),
     null
   );
 
+  const genreCounts = books.reduce((acc, book) => {
+    acc[book.genre] = (acc[book.genre] || 0) + 1;
+    return acc;
+  }, {});
+
+  const booksByGenreData = Object.entries(genreCounts).map(([genre, count]) => ({
+    genre,
+    count
+  }));
+
   if (error) return <p className="error">{error}</p>;
 
   return user ? (
     <div className="dashboard">
-      <div className="banner" style={styles.banner}>
-        <span style={styles.title}>🔍 User Lookup Tool</span>
-        <form onSubmit={handleSearch} style={styles.searchForm}>
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search users..."
-            style={styles.input}
-          />
-          <button type="submit">Search</button>
-        </form>
-        <button onClick={handleLogout}>🚪 Logout</button>
-      </div>
-
-      <div className="books-section" style={{ marginTop: '1rem' }}>
-        <h3>📚 Books Chart</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={books}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="title" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="votes" fill="#8884d8" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
       <div className="vote-banner" style={styles.voteBanner}>
         <h2>📘 Book of the Month:</h2>
         {bookOfTheMonth ? (
@@ -176,20 +134,36 @@ const Dashboard = () => {
         </a>
       </div>
 
-      <h3>📢 Current Votes</h3>
-      <ul>
-        {books.map((book) => (
-          <li key={book._id} style={{ marginBottom: '1rem' }}>
-            <strong>{book.title}</strong> by {book.author} — {book.votes} votes
-            <button
-              onClick={() => handleVote(book._id)}
-              style={{ marginLeft: '1rem', cursor: 'pointer' }}
-            >
-              👍 Vote
-            </button>
-          </li>
-        ))}
-      </ul>
+      <div className="club-stats" style={styles.statsContainer}>
+        <h3>📊 Club Stats</h3>
+        <div style={styles.statsFlex}>
+          <div style={styles.statSection}>
+            <h4>Total Books Read</h4>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={books}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="title" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="readcount" fill="#82ca9d" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div style={styles.statSection}>
+            <h4>Books by Genre</h4>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={booksByGenreData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="genre" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="count" fill="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
 
       <div className="skills-section" style={{ marginTop: '2rem' }}>
         <h3>🧠 Your Skills</h3>
@@ -228,19 +202,6 @@ const Dashboard = () => {
         <p><strong>Phone:</strong> {user.phone}</p>
         <p><strong>Role:</strong> {user.role || 'user'}</p>
       </div>
-
-      {results.length > 0 && (
-        <div className="results" style={{ marginTop: '1rem' }}>
-          <h3>Search Results:</h3>
-          <ul>
-            {results.map((r) => (
-              <li key={r._id}>
-                {r.name} - {r.email}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   ) : (
     <p>Loading dashboard...</p>
@@ -248,28 +209,24 @@ const Dashboard = () => {
 };
 
 const styles = {
-  banner: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '0.5rem 1rem'
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: '1.2rem'
-  },
-  searchForm: {
-    display: 'flex',
-    gap: '0.5rem'
-  },
-  input: {
-    padding: '0.25rem 0.5rem'
-  },
   voteBanner: {
     textAlign: 'center',
     marginTop: '2rem'
+  },
+  statsContainer: {
+    marginTop: '2rem'
+  },
+  statsFlex: {
+    display: 'flex',
+    gap: '2rem',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap'
+  },
+  statSection: {
+    flex: '1 1 45%'
   }
 };
 
 export default Dashboard;
-// Dashboard.js
+// This code defines a dashboard for a user lookup application that displays user information, book statistics, and allows users to manage their skills.
+// It includes features like voting for a book of the month, viewing club stats, and adding/removing skills.
