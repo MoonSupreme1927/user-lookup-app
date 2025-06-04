@@ -10,7 +10,7 @@ import {
   CartesianGrid,
   ResponsiveContainer
 } from 'recharts';
-//import './Dashboard.css';
+import './Dashboard.css';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
