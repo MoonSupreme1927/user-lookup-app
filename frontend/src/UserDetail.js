@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchUserById, fetchSkillsByUserId, addSkillToUser, removeSkillFromUser } from '/services/userService';
+import { fetchUserById, fetchSkillsByUserId, addSkillToUser, removeSkillFromUser } from './services/userservice';
 
 const UserDetail = () => {
   const { id } = useParams();
