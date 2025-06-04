@@ -7,26 +7,7 @@ const { verifyToken, requireUser, requireAdmin, requireOwner, } = require('./mid
 // Load environment variables
 require('dotenv').config();
 
-const IPQS_API_KEY = process.env.IPQS_API_KEY;
-
-const axios = require('axios');
-
-const emailValid = await axios.get(`https://ipqualityscore.com/api/json/email/${IPQS_API_KEY}/${email}`);
-const phoneValid = await axios.get(`https://ipqualityscore.com/api/json/phone/${IPQS_API_KEY}/${phone}`);
-
-console.log('IPQS Email Check:', emailValid.data);
-console.log('IPQS Phone Check:', phoneValid.data);
-
-if (!emailValid.data.valid || emailValid.data.disposable) {
-  return res.status(400).json({ error: 'Invalid or disposable email.' });
-}
-if (!phoneValid.data.valid || phoneValid.data.active !== true) {
-  return res.status(400).json({ error: 'Invalid or inactive phone number.' });
-}
-
-
 // Import models
-
 
 
 const User = require('./models/User');
@@ -56,6 +37,23 @@ app.post('/signup', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ name, email: req.body.email.toLowerCase(), phone, password: hashedPassword });
     await newUser.save();
+
+    const IPQS_API_KEY = process.env.IPQS_API_KEY;
+
+const axios = require('axios');
+
+const emailValid = await axios.get(`https://ipqualityscore.com/api/json/email/${IPQS_API_KEY}/${email}`);
+const phoneValid = await axios.get(`https://ipqualityscore.com/api/json/phone/${IPQS_API_KEY}/${phone}`);
+
+console.log('IPQS Email Check:', emailValid.data);
+console.log('IPQS Phone Check:', phoneValid.data);
+
+if (!emailValid.data.valid || emailValid.data.disposable) {
+  return res.status(400).json({ error: 'Invalid or disposable email.' });
+}
+if (!phoneValid.data.valid || phoneValid.data.active !== true) {
+  return res.status(400).json({ error: 'Invalid or inactive phone number.' });
+}
 
     // Create empty skill document on signup
     await new Skill({ userId: newUser._id, skills: [] }).save();
