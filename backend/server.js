@@ -31,39 +31,96 @@ app.post('/signup', async (req, res) => {
   try {
     const { name, email, phone, password } = req.body;
     const lowerEmail = email.toLowerCase();
-    const existingUser = await User.findOne({ email });
+
+    const existingUser = await User.findOne({ email: lowerEmail });
     if (existingUser) return res.status(409).json({ error: 'User already exists' });
 
+    const IPQS_API_KEY = process.env.IPQS_API_KEY;
+    const axios = require('axios');
+
+    // 🔍 Validate email and phone BEFORE saving the user
+    const emailCheck = await axios.get(`https://ipqualityscore.com/api/json/email/${IPQS_API_KEY}/${lowerEmail}`);
+    const phoneCheck = await axios.get(`https://ipqualityscore.com/api/json/phone/${IPQS_API_KEY}/${phone}`);
+
+    console.log('IPQS Email Check:', emailCheck.data);
+    console.log('IPQS Phone Check:', phoneCheck.data);
+
+    if (!emailCheck.data.valid || emailCheck.data.disposable) {
+      return res.status(400).json({ error: 'Invalid or disposable email.' });
+    }
+
+    if (!phoneCheck.data.valid || phoneCheck.data.active !== true) {
+      return res.status(400).json({ error: 'Invalid or inactive phone number.' });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, email: req.body.email.toLowerCase(), phone, password: hashedPassword });
+    const newUser = new User({ name, email: lowerEmail, phone, password: hashedPassword });
     await newUser.save();
 
-    const IPQS_API_KEY = process.env.IPQS_API_KEY;
+    // ✅ SKILLS ROUTES
 
-const axios = require('axios');
-
-const emailValid = await axios.get(`https://ipqualityscore.com/api/json/email/${IPQS_API_KEY}/${email}`);
-const phoneValid = await axios.get(`https://ipqualityscore.com/api/json/phone/${IPQS_API_KEY}/${phone}`);
-
-console.log('IPQS Email Check:', emailValid.data);
-console.log('IPQS Phone Check:', phoneValid.data);
-
-if (!emailValid.data.valid || emailValid.data.disposable) {
-  return res.status(400).json({ error: 'Invalid or disposable email.' });
-}
-if (!phoneValid.data.valid || phoneValid.data.active !== true) {
-  return res.status(400).json({ error: 'Invalid or inactive phone number.' });
-}
-
-    // Create empty skill document on signup
-    await new Skill({ userId: newUser._id, skills: [] }).save();
-
-    res.status(201).json({ message: 'Signup successful!' });
+// Get skills by user ID
+app.get('/skills/:userId', async (req, res) => {
+  try {
+    const skillDoc = await Skill.findOne({ userId: req.params.userId });
+    if (!skillDoc) return res.json({ skills: [] });
+    res.json({ skills: skillDoc.skills });
   } catch (err) {
-    console.error('Signup error:', err);
+    console.error('Error fetching skills:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+// Add a skill for a user
+app.post('/skills/:userId', verifyToken, requireOwner, async (req, res) => {
+  const { skill } = req.body;
+  const { userId } = req.params;
+
+  if (!skill) return res.status(400).json({ error: 'Skill is required' });
+
+  try {
+    let skillDoc = await Skill.findOne({ userId });
+
+    if (!skillDoc) {
+      skillDoc = new Skill({ userId, skills: [skill] });
+    } else if (!skillDoc.skills.includes(skill)) {
+      skillDoc.skills.push(skill);
+    } else {
+      return res.status(409).json({ error: 'Skill already exists' });
+    }
+
+    await skillDoc.save();
+    res.json({ skills: skillDoc.skills });
+  } catch (err) {
+    console.error('Error adding skill:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Delete a skill
+app.delete('/skills/:userId/:skill', verifyToken, requireOwner, async (req, res) => {
+  try {
+    const skillDoc = await Skill.findOne({ userId: req.params.userId });
+    if (!skillDoc) return res.status(404).json({ error: 'No skills found' });
+
+    skillDoc.skills = skillDoc.skills.filter(s => s !== req.params.skill);
+    await skillDoc.save();
+
+    res.json({ skills: skillDoc.skills });
+  } catch (err) {
+    console.error('Error deleting skill:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+    res.status(201).json({ message: 'Signup successful!' });
+  } catch (err) {
+    console.error('Signup error:', err.response?.data || err);
+    res.status(500).json({ error: 'Server error during signup' });
+  }
+});
+
 
 // 🔐 Login route
 app.post('/login', async (req, res) => {

@@ -90,7 +90,12 @@ function App() {
             />
           }
         />
+
         <Route
+          path="/signup"
+          element={<Signup setError={setError} setLoading={setLoading} navigate={navigate} />}
+        />
+                <Route
           path="/login"
           element={
             <Login
@@ -103,10 +108,7 @@ function App() {
             />
           }
         />
-        <Route
-          path="/signup"
-          element={<Signup setError={setError} setLoading={setLoading} navigate={navigate} />}
-        />
+        
         <Route
           path="/dashboard"
           element={<Dashboard setError={setError} setLoading={setLoading} navigate={navigate} />}

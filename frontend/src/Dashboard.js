@@ -15,12 +15,13 @@ import './Dashboard.css';
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [books, setBooks] = useState([]);
+  const [skills, setSkills] = useState([]);
+  const [newSkill, setNewSkill] = useState('');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Fetch user + books on mount
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -28,25 +29,31 @@ const Dashboard = () => {
       return;
     }
 
-    const fetchUserAndBooks = async () => {
+    const fetchUserBooksSkills = async () => {
       try {
-        const [userRes, booksRes] = await Promise.all([
-          axios.get('https://user-lookup-app.onrender.com/dashboard', {
-            headers: { Authorization: `Bearer ${token}` }
-          }),
+        const userRes = await axios.get('https://user-lookup-app.onrender.com/dashboard', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUser(userRes.data.user);
+
+        const [booksRes, skillsRes] = await Promise.all([
           axios.get('https://user-lookup-app.onrender.com/books', {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get(`https://user-lookup-app.onrender.com/skills/${userRes.data.user._id}`, {
+            headers: { Authorization: `Bearer ${token}` },
           })
         ]);
-        setUser(userRes.data.user);
+
         setBooks(booksRes.data);
+        setSkills(skillsRes.data.skills);
       } catch (err) {
         console.error(err);
         setError('Access denied or session expired.');
       }
     };
 
-    fetchUserAndBooks();
+    fetchUserBooksSkills();
   }, []);
 
   const handleVote = async (bookId) => {
@@ -63,6 +70,35 @@ const Dashboard = () => {
       );
     } catch (err) {
       console.error('Vote failed:', err);
+    }
+  };
+
+  const handleAddSkill = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    try {
+      const { data } = await axios.post(
+        `https://user-lookup-app.onrender.com/skills/${user._id}`,
+        { skill: newSkill },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setSkills(data.skills);
+      setNewSkill('');
+    } catch (err) {
+      console.error('Add skill error:', err);
+    }
+  };
+
+  const handleDeleteSkill = async (skill) => {
+    const token = localStorage.getItem('token');
+    try {
+      const { data } = await axios.delete(
+        `https://user-lookup-app.onrender.com/skills/${user._id}/${skill}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setSkills(data.skills);
+    } catch (err) {
+      console.error('Delete skill error:', err);
     }
   };
 
@@ -123,16 +159,24 @@ const Dashboard = () => {
         </ResponsiveContainer>
       </div>
 
-      {bookOfTheMonth && (
-        <div className="book-of-month-banner" style={styles.bookBanner}>
-          <h2>📘 Book of the Month:</h2>
-          <p>
-            <strong>{bookOfTheMonth.title}</strong> by {bookOfTheMonth.author}
-          </p>
-        </div>
-      )}
+      <div className="vote-banner" style={styles.voteBanner}>
+        <h2>📘 Book of the Month:</h2>
+        {bookOfTheMonth ? (
+          <p><strong>{bookOfTheMonth.title}</strong> by {bookOfTheMonth.author}</p>
+        ) : (
+          <p>No votes yet.</p>
+        )}
+        <a
+          href="https://docs.google.com/forms/d/1hD0ojVkqI2MDuPKgwG5I5f6ILroe1WJ_euVlp_n0LlQ"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="vote-button"
+        >
+          🗳️ Vote for Book of the Month
+        </a>
+      </div>
 
-      <h3>📢 Vote for Book of the Month</h3>
+      <h3>📢 Current Votes</h3>
       <ul>
         {books.map((book) => (
           <li key={book._id} style={{ marginBottom: '1rem' }}>
@@ -147,17 +191,42 @@ const Dashboard = () => {
         ))}
       </ul>
 
+      <div className="skills-section" style={{ marginTop: '2rem' }}>
+        <h3>🧠 Your Skills</h3>
+        <form onSubmit={handleAddSkill} style={{ marginBottom: '1rem' }}>
+          <input
+            type="text"
+            value={newSkill}
+            onChange={(e) => setNewSkill(e.target.value)}
+            placeholder="Add a new skill"
+          />
+          <button type="submit">➕ Add Skill</button>
+        </form>
+
+        {skills.length === 0 ? (
+          <p>No skills found.</p>
+        ) : (
+          <ul>
+            {skills.map((skill, index) => (
+              <li key={index}>
+                {skill}
+                <button
+                  onClick={() => handleDeleteSkill(skill)}
+                  style={{ marginLeft: '1rem', color: 'red' }}
+                >
+                  ❌ Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
       <div className="welcome-section" style={{ marginTop: '1rem' }}>
         <h2>Welcome, {user.name}!</h2>
-        <p>
-          <strong>Email:</strong> {user.email}
-        </p>
-        <p>
-          <strong>Phone:</strong> {user.phone}
-        </p>
-        <p>
-          <strong>Role:</strong> {user.role || 'user'}
-        </p>
+        <p><strong>Email:</strong> {user.email}</p>
+        <p><strong>Phone:</strong> {user.phone}</p>
+        <p><strong>Role:</strong> {user.role || 'user'}</p>
       </div>
 
       {results.length > 0 && (
@@ -196,14 +265,11 @@ const styles = {
   input: {
     padding: '0.25rem 0.5rem'
   },
-  bookBanner: {
-    background: '#ffdd57',
-    padding: '1rem',
-    marginTop: '2rem',
-    borderRadius: '8px',
+  voteBanner: {
     textAlign: 'center',
-    animation: 'pulse 2s infinite'
+    marginTop: '2rem'
   }
 };
 
 export default Dashboard;
+// Dashboard.js

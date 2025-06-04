@@ -8,23 +8,21 @@ const LandingPage = () => {
       <header style={styles.banner}>
         <h1>User Lookup App</h1>
         <p>Your hub for managing and searching user data with ease.</p>
-        <Link to="/login" style={styles.loginBtn}>Login</Link>
       </header>
 
-      {/* News Section */}
-      <section style={styles.section}>
-        <h2>📺 Today's News</h2>
-        <div style={styles.newsBox}>
-          <iframe
-            title="MSNBC Live"
-            width="100%"
-            height="315"
-            src="https://www.youtube.com/watch?v=g5e5ZhUneyM"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
-        </div>
+      {/* Podcast Section */}
+      <section style={styles.podcastSection}>
+        <h2>🎧 Featured Podcast: Black Chick Lit</h2>
+        <p>A bi-monthly podcast celebrating Black women in literature through humor, heart, and honest conversation.</p>
+        <iframe style={styles.iframe}
+          src="https://open.spotify.com/embed/show/4M3p2cLhTNB0IJrRyXMz5Y?utm_source=generator"
+          width="100%"
+          height="232"
+          frameBorder="0"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+          title="Black Chick Lit Podcast"
+        ></iframe>
       </section>
 
       {/* Book Club Section */}
@@ -46,7 +44,7 @@ const LandingPage = () => {
       <section style={styles.section}>
         <h2>Join our monthly Bookclub!!</h2>
         <p>See bookclub readers list</p>
-        <Link to="/search" style={styles.loginBtn}>JOIN NOW!</Link>
+        <Link to="/signup" style={styles.signUpBtn}>JOIN NOW!</Link>
       </section>
     </div>
   );
@@ -64,27 +62,26 @@ const styles = {
     padding: '2rem',
     textAlign: 'center',
   },
-  loginBtn: {
-    display: 'inline-block',
-    marginTop: '1rem',
-    padding: '0.75rem 1.5rem',
-    backgroundColor: '#ffffff',
-    color: '#007bff',
-    textDecoration: 'none',
-    borderRadius: '5px',
-    fontWeight: 'bold',
-  },
   section: {
     padding: '2rem',
     textAlign: 'center',
   },
-  newsBox: {
+  podcastSection: {
+    background: 'linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1)',
+    backgroundSize: '600% 600%',
+    animation: 'flash 10s ease infinite',
+    padding: '2rem',
+    marginTop: '2rem',
+    borderRadius: '12px',
+    color: '#fff',
+    textAlign: 'center',
+  },
+  iframe: {
+    borderRadius: '12px',
     marginTop: '1rem',
-    borderRadius: '8px',
-    overflow: 'hidden',
-    boxShadow: '0 0 10px rgba(0,0,0,0.1)',
     maxWidth: '700px',
-    margin: 'auto',
+    width: '100%',
+    height: '232px'
   },
   bookClubBox: {
     marginTop: '1rem',
@@ -102,8 +99,18 @@ const styles = {
     textDecoration: 'none',
     fontWeight: 'bold',
   },
+  signUpBtn: {
+    display: 'inline-block',
+    marginTop: '1rem',
+    padding: '0.75rem 1.5rem',
+    backgroundColor: '#007bff',
+    color: 'white',
+    textDecoration: 'none',
+    borderRadius: '5px',
+    fontWeight: 'bold',
+  }
 };
 
 export default LandingPage;
 // This code defines a simple landing page for a user lookup application.
-// It includes a banner with a login button, a news section displaying a live MSNBC stream,
+// It includes a banner with the app title, a featured podcast section with an embedded Spotify player,
