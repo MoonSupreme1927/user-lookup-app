@@ -37,7 +37,7 @@ const LandingPage = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="suggestion-button"
-            style={{ textDecoration: 'none', color: 'inherit', padding: '0.5rem 1rem', backgroundColor: '#f0f0f0', borderRadius: '5px' }}
+            style={{ textDecoration: 'none', color: 'inherit', padding: '0.5rem 1rem', backgroundColor: '#000000', borderRadius: '5px' }}
           >
               📖 Suggest a Book →
           </a>
