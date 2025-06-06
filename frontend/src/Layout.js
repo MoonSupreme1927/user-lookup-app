@@ -6,7 +6,7 @@ const Layout = ({ darkMode, toggleDarkMode, children }) => {
   return (
     <div className={darkMode ? 'App dark' : 'App'}>
       <header className="banner">
-        User Lookup Tool
+        The SHElf Society
         <button className="dark-toggle" onClick={toggleDarkMode}>
           {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
         </button>

@@ -123,5 +123,5 @@ const styles = {
 };
 
 export default LandingPage;
-// This code defines a simple landing page for a user lookup application.
+// This code defines a simple landing page for the SHElf Society application.
 // It includes a banner with the app title, a featured podcast section with an embedded Spotify player,

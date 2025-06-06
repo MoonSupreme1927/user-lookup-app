@@ -3,7 +3,7 @@ import React from 'react';
 const Banner = ({ query, setQuery, handleSearch, handleLogout }) => {
   return (
     <div className="banner" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 1rem' }}>
-      <span style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>🔍 BookClub</span>
+      <span style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>🔍 The SHElf Society</span>
 
       <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.5rem' }}>
         <input

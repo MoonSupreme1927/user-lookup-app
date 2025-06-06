@@ -50,7 +50,7 @@ function App() {
     <div className={darkMode ? 'app dark-mode' : 'app'}>
       <header className="banner">
         <div className="banner-top">
-        <Link to="/" className="banner-title" style={{ textDecoration: 'none', color: 'inherit' }}>User Lookup Tool</Link>
+        <Link to="/" className="banner-title" style={{ textDecoration: 'none', color: 'inherit' }}>The SHElf Society </Link>
           <button className="dark-toggle" onClick={() => setDarkMode(!darkMode)}>
             {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
           </button>
