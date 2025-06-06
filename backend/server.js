@@ -27,7 +27,7 @@ mongoose.connect(process.env.MONGO_URI, {
   .catch((err) => console.error('MongoDB connection error:', err));
 
 // 🔐 Signup route
-app.post('/signup', async (req, res) => {
+app.post('/users/signup', async (req, res) => {
   try {
     const { name, email, phone, password } = req.body;
     const lowerEmail = email.toLowerCase();
@@ -39,8 +39,8 @@ app.post('/signup', async (req, res) => {
     const axios = require('axios');
 
     // 🔍 Validate email and phone BEFORE saving the user
-    const emailCheck = await axios.get(`https://ipqualityscore.com/api/json/email/YOUR_API_KEY_HERE/USER_EMAIL_HERE`);
-    const phoneCheck = await axios.get(`https://ipqualityscore.com/api/json/phone/YOUR_API_KEY_HERE/USER_PHONE_HERE`);
+    const emailCheck = await axios.get(`https://ipqualityscore.com/api/json/email/${IPQS_API_KEY}/${lowerEmail}`);
+    const phoneCheck = await axios.get(`https://ipqualityscore.com/api/json/phone/${IPQS_API_KEY}/${phone}`);
 
     console.log('IPQS Email Check:', emailCheck.data);
     console.log('IPQS Phone Check:', phoneCheck.data);
@@ -123,7 +123,7 @@ app.delete('/skills/:userId/:skill', verifyToken, requireOwner, async (req, res)
 
 
 // 🔐 Login route
-app.post('/login', async (req, res) => {
+app.post('/users/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
