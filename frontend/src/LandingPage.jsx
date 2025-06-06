@@ -6,8 +6,8 @@ const LandingPage = () => {
     <div style={styles.page}>
       {/* Banner Section */}
       <header style={styles.banner}>
-        <h1>User Lookup App</h1>
-        <p>Your hub for managing and searching user data with ease.</p>
+        <h1>SHElf Society Bookclub App</h1>
+        <p>Your hub for managing and searching bookclub data with ease.</p>
       </header>
 
       {/* Podcast Section */}
