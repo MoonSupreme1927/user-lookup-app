@@ -45,11 +45,11 @@ app.post('/users/signup', async (req, res) => {
     console.log('IPQS Email Check:', emailCheck.data);
     console.log('IPQS Phone Check:', phoneCheck.data);
 
-    if (!emailCheck.data.valid || emailCheck.data.disposable) {
+    if (!emailCheck.data.valid !== true || emailCheck.data.disposable !== false) {
       return res.status(400).json({ error: 'Invalid or disposable email.' });
     }
 
-    if (!phoneCheck.data.valid || phoneCheck.data.active !== true) {
+    if (!phoneCheck.data.valid !== true || phoneCheck.data.active !== false) {
       return res.status(400).json({ error: 'Invalid or inactive phone number.' });
     }
 
@@ -110,7 +110,7 @@ app.delete('/skills/:userId/:skill', verifyToken, requireOwner, async (req, res)
   } catch (err) {
     console.error('Error deleting skill:', err);
     res.status(500).json({ error: 'Server error' });
-  }
+  }   
 });
 
 
