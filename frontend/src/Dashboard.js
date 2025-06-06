@@ -6,9 +6,41 @@ import {
 } from 'recharts';
 import './Dashboard.css';
 import './services/dashboardService';
+import { useNavigate } from 'react-router-dom';
+import { fetchUserById } from './services/userService';
 const Dashboard = () => {
   const [books, setBooks] = useState([]);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+  const isOwner = loggedInUser?._id === id;
+  const id = loggedInUser?._id;
+  // Check if the user is logged in and has a valid token
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setError('You must be logged in to view this page.');
+      return;
+    }
+    const fetchUser = async () => {
+      try {
+        const userRes = await fetchUserById(id);
+        if (!userRes.data) {
+          setError('User not found.');
+          return;
+        }
+        // You can set user data in state if needed
+      } catch (err) {
+        console.error('Failed to fetch user:', err);
+        setError('Failed to fetch user data.');
+      }
+    };
+    fetchUser();
+  }, [id]);
+
+  0
+  
+  // Fetch books and user data on component mount
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -58,6 +90,7 @@ const Dashboard = () => {
     acc[book.genre] = (acc[book.genre] || 0) + 1;
     return acc;
   }, {});
+  
 
   const booksByGenreData = Object.entries(genreCounts).map(([genre, count]) => ({
     genre,
@@ -67,8 +100,15 @@ const Dashboard = () => {
   if (error) return <p className="error">{error}</p>;
 
   return (
+    
     <div className="dashboard">
-      <button className="btn-secondary" onClick={() => navigate('/UserDetail')}>📊 User Profile</button>
+      
+      {loggedInUser && (
+  <button className="btn-secondary" onClick={() => navigate(`/users/${loggedInUser._id}`)}>
+    📊 User Profile
+  </button>
+)}
+
       <div className="book-of-month" style={styles.bookMonth}>
         <h2>📘 Book of the Month</h2>
         <h2>The Vanishing Half</h2>
