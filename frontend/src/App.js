@@ -9,6 +9,9 @@ import Dashboard from './Dashboard';
 import ResetPassword from './ResetPassword';
 import ForgotPassword from './ForgotPassword';
 import UserDetail from './UserDetail';
+import ProtectedRoutes from './ProtectedRoutes';
+import AdminDashboard from './AdminDashboard';
+
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -121,9 +124,25 @@ function App() {
         element={<ForgotPassword setError={setError} setLoading={setLoading} navigate={navigate} />} />
 
 
-        <Route path="/UserDetails/:id" 
-        element={<UserDetail setError={setError} setLoading={setLoading} navigate={navigate} />}
-        
+        <Route path="/users/:id" 
+        element={
+        <ProtectedRoutes>
+          <UserDetail 
+          setError={setError} 
+          setLoading={setLoading} 
+          navigate={navigate} 
+         ></UserDetail>
+         </ProtectedRoutes>}
+        />
+         <Route path="/admin"
+          element={
+            <ProtectedRoutes>
+                  <AdminDashboard
+                  setError={setError} 
+                  setLoading={setLoading} 
+                  navigate={navigate}
+                ></AdminDashboard>
+                </ProtectedRoutes>}
         />
       </Routes>
     </div>

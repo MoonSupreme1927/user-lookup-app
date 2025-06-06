@@ -6,11 +6,11 @@ const bookSchema = new mongoose.Schema({
   publishedYear: Number,
   genre: {
     type: String,
-    enum: ['Fiction', 'Non-Fiction', 'Fantasy', 'Mystery', 'Biography', 'History', 'Science Fiction', 'Romance', 'Other'],
+    enum: ['Fiction', 'Non-Fiction', 'Fantasy', 'Mystery', 'Biography', 'History', 'Science Fiction', 'Romance', 'Thriller', 'Horror', 'Self-Help', 'Other'],
     required: true
   },
   votes: { type: Number, default: 0 },
-  readCount: { type: Number, default: 0 } // new field to track how many times a book was read
+  readCount: { type: Number, default: 1 } // new field to track how many times a book was read
 });
 
 module.exports = mongoose.model('Book', bookSchema);

@@ -1,6 +1,13 @@
+// UserDetail.js (with profile edit support and save button)
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchUserById, fetchSkillsByUserId, addSkillToUser, removeSkillFromUser } from './services/userService';
+import {
+  fetchUserById,
+  fetchSkillsByUserId,
+  addSkillToUser,
+  removeSkillFromUser,
+} from './services/userService';
+import axios from 'axios';
 
 const UserDetail = () => {
   const { id } = useParams();
@@ -57,6 +64,24 @@ const UserDetail = () => {
     }
   };
 
+  const handleProfileUpdate = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.put(
+        `https://user-lookup-app.onrender.com/users/${id}`,
+        user,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      alert('Profile updated!');
+      setUser(res.data.user);
+    } catch (err) {
+      console.error('Update failed:', err);
+      alert('Failed to update profile');
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="error">{error}</p>;
   if (!user) return <p>No user found.</p>;
@@ -66,16 +91,25 @@ const UserDetail = () => {
       <div className="detail-container">
         <div className="header">
           <h1>User Profile</h1>
-          <button className="btn-secondary" onClick={() => navigate('/')}>
-            ⬅️ Back to Search
-          </button>
+          <button className="btn-secondary" onClick={() => navigate('/')}>⬅️ Back to Search</button>
         </div>
 
         <div className="contact-card">
           <h2>👤 Contact Info</h2>
-          <p><strong>Name:</strong> {user.name}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Phone:</strong> {user.phone}</p>
+          {isOwner ? (
+            <>
+              <input value={user.name} onChange={(e) => setUser({ ...user, name: e.target.value })} />
+              <input value={user.email} onChange={(e) => setUser({ ...user, email: e.target.value })} />
+              <input value={user.phone} onChange={(e) => setUser({ ...user, phone: e.target.value })} />
+              <button className="btn-primary" onClick={handleProfileUpdate}>💾 Save Changes</button>
+            </>
+          ) : (
+            <>
+              <p><strong>Name:</strong> {user.name}</p>
+              <p><strong>Email:</strong> {user.email}</p>
+              <p><strong>Phone:</strong> {user.phone}</p>
+            </>
+          )}
         </div>
 
         <div className="skills-card">
@@ -86,12 +120,7 @@ const UserDetail = () => {
                 <li key={idx}>
                   {skill}
                   {isOwner && (
-                    <button
-                      onClick={() => handleRemoveSkill(skill)}
-                      className="remove-skill-btn"
-                    >
-                      ❌
-                    </button>
+                    <button onClick={() => handleRemoveSkill(skill)} className="remove-skill-btn">❌</button>
                   )}
                 </li>
               ))}
@@ -118,3 +147,5 @@ const UserDetail = () => {
 };
 
 export default UserDetail;
+// This component allows users to view and edit their profile details, including skills.
+// It fetches user data and skills from the server, allows adding/removing skills,

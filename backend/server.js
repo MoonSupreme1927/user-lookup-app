@@ -155,6 +155,39 @@ app.get('/dashboard', verifyToken, requireUser, async (req, res) => {
   }
 });
 
+app.get('/admin/users', verifyToken, requireAdmin, async (req, res) => {
+  try {
+    const users = await User.find().select('-password');
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+app.put('/admin/users/:id/promote', verifyToken, requireAdmin, async (req, res) => {
+  const { id } = req.params;  
+  try {
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    if (user.role === 'admin') return res.status(400).json({ error: 'User is already an admin' });
+    user.role = 'admin';
+    await user.save();
+    res.json({ message: 'User promoted to admin', user });
+  } catch (err) {
+    console.error('Promotion error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Delete user
+app.delete('/admin/users/:id', verifyToken, requireAdmin, async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error deleting user' });
+  }
+});
 
 // 🧾 Public Routes
 app.get('/search', async (req, res) => {
