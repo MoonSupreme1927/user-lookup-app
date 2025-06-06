@@ -49,7 +49,7 @@ app.post('/users/signup', async (req, res) => {
       return res.status(400).json({ error: 'Invalid or disposable email.' });
     }
 
-    if (!phoneCheck.data.valid !== true || phoneCheck.data.active !== false) {
+    if (!phoneCheck.data.valid !== true || phoneCheck.data.active !== true) {
       return res.status(400).json({ error: 'Invalid or inactive phone number.' });
     }
 
