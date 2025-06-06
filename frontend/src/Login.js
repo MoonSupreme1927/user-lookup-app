@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const Login = ({ setError, setLoading }) => {
+const Login = ({ setError = () => {}, setLoading = () => {} }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -29,7 +29,7 @@ const Login = ({ setError, setLoading }) => {
     setLoading(true);
 
     try {
-      const { data } = await axios.post('https://user-lookup-app.onrender.com/login', formData);
+      const { data } = await axios.post('https://user-lookup-app.onrender.com/users/login', formData);
 
       const { token, user } = data;
 
@@ -38,11 +38,8 @@ const Login = ({ setError, setLoading }) => {
         return;
       }
 
-      // Store token and user info
       localStorage.setItem('token', token);
       localStorage.setItem('loggedInUser', JSON.stringify(user));
-
-      // Optional: Token expiry logic (1 day)
       const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
       localStorage.setItem('tokenExpiry', expiresAt.toISOString());
 
@@ -55,41 +52,21 @@ const Login = ({ setError, setLoading }) => {
     }
   };
 
-  const handleForgotPassword = () => {
-    navigate('/forgot-password');
-  };
-
   return (
     <div className="form-section">
       <h2>🔐 Login</h2>
       {message && <p className="message">{message}</p>}
       <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
+        <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
+        <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
         <button type="submit" className="btn-primary">Login</button>
       </form>
 
       {errorMessage && <p className="error">{errorMessage}</p>}
-
-      <button type="button" className="btn-secondary" onClick={handleForgotPassword}>
-        Forgot Password?
-      </button>
     </div>
   );
 };
 
 export default Login;
+// This code defines a Login component that handles user login functionality.
+// It uses React hooks to manage form state and side effects, and Axios for making HTTP requests.

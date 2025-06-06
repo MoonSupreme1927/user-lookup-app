@@ -31,7 +31,10 @@ const Signup = () => {
     }
 
     try {
-      const response = await axios.post('https://user-lookup-app.onrender.com/signup', formData);
+      const response = await axios.post(
+        'https://user-lookup-app.onrender.com/users/signup',
+        formData
+      );
       setMessage(response.data.message || '🎉 Signup successful!');
       setTimeout(() => navigate('/login', { state: { fromSignup: true } }), 2000);
     } catch (err) {
@@ -39,86 +42,23 @@ const Signup = () => {
     }
   };
 
-  const handleResetPassword = async (e) => {
-    e.preventDefault();
-    setError('');
-    setMessage('');
-
-    try {
-      const response = await axios.post('https://user-lookup-app.onrender.com/reset-password', {
-        email: formData.email
-      });
-      setMessage(response.data.message || '📬 Reset link sent to your email');
-    } catch (err) {
-      setError(err.response?.data?.error || 'Reset failed. Try again.');
-    }
-  };
-
   return (
     <div className="form-section">
       <h2>📝 Sign Up</h2>
-
       {message && <p className="success">{message}</p>}
       {error && <p className="error">{error}</p>}
 
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="phone"
-          placeholder="Phone"
-          value={formData.phone}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          required
-        />
+        <input type="text" name="name" placeholder="Full Name" value={formData.name} onChange={handleChange} required />
+        <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
+        <input type="text" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} required />
+        <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
+        <input type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} required />
         <button className="btn-primary" type="submit">Sign Up</button>
-      </form>
-
-      <h3>🔑 Forgot Password?</h3>
-      <form onSubmit={handleResetPassword}>
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter your email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <button className="btn-secondary" type="submit">Send Reset Link</button>
       </form>
     </div>
   );
 };
 
 export default Signup;
+//       <button className="btn-secondary" onClick={handleLogout}>🚪 Logout</button>
