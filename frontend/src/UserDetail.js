@@ -91,7 +91,7 @@ const UserDetail = () => {
       <div className="detail-container">
         <div className="header">
           <h1>User Profile</h1>
-          <button className="btn-secondary" onClick={() => navigate('/')}>⬅️ Back to Search</button>
+          <button className="btn-secondary" onClick={() => navigate('/UserDetail')}>⬅️ Back to Search</button>
         </div>
 
         <div className="contact-card">
