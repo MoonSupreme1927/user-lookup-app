@@ -98,7 +98,7 @@ const Login = ({ setError = () => {}, setLoading = () => {} }) => {
 
       {adminMode && (
         <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-          <button className="btn-secondary" onClick={() => navigate('/admin')}>
+          <button className="btn-secondary" onClick={() => navigate('/AdminDashboard')}>
             👑 Admin Access
           </button>
         </div>
