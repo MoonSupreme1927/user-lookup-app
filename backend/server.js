@@ -39,19 +39,19 @@ app.post('/signup', async (req, res) => {
     const axios = require('axios');
 
     // 🔍 Validate email and phone BEFORE saving the user
-    const emailCheck = await axios.get(`https://ipqualityscore.com/api/json/email/${IPQS_API_KEY}/${lowerEmail}`);
-    const phoneCheck = await axios.get(`https://ipqualityscore.com/api/json/phone/${IPQS_API_KEY}/${phone}`);
+    const emailCheck = await axios.get(`https://ipqualityscore.com/api/json/email/YOUR_API_KEY_HERE/USER_EMAIL_HERE`);
+    const phoneCheck = await axios.get(`https://ipqualityscore.com/api/json/phone/YOUR_API_KEY_HERE/USER_PHONE_HERE`);
 
     console.log('IPQS Email Check:', emailCheck.data);
     console.log('IPQS Phone Check:', phoneCheck.data);
 
-    // if (!emailCheck.data.valid || emailCheck.data.disposable) {
-    //   return res.status(400).json({ error: 'Invalid or disposable email.' });
-    // }
+    if (!emailCheck.data.valid || emailCheck.data.disposable) {
+      return res.status(400).json({ error: 'Invalid or disposable email.' });
+    }
 
-    // if (!phoneCheck.data.valid || phoneCheck.data.active !== true) {
-    //   return res.status(400).json({ error: 'Invalid or inactive phone number.' });
-    // }
+    if (!phoneCheck.data.valid || phoneCheck.data.active !== true) {
+      return res.status(400).json({ error: 'Invalid or inactive phone number.' });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ name, email: lowerEmail, phone, password: hashedPassword });
