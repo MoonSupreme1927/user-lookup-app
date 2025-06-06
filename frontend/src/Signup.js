@@ -32,7 +32,7 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        'https://user-lookup-app.onrender.com/users/signup',
+        'https://user-lookup-app.onrender.com/users/Signup',
         formData
       );
       setMessage(response.data.message || '🎉 Signup successful!');

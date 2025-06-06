@@ -29,7 +29,7 @@ const Login = ({ setError = () => {}, setLoading = () => {} }) => {
     setLoading(true);
 
     try {
-      const { data } = await axios.post('https://user-lookup-app.onrender.com/users/login', formData);
+      const { data } = await axios.post('https://user-lookup-app.onrender.com/users/Login', formData);
 
       const { token, user } = data;
 
