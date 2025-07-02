@@ -13,7 +13,7 @@ require('dotenv').config();
 const User = require('./models/User');
 const Skill = require('./models/Skill');
 const Book = require('./models/Book');
-const MonthlyBook = require('./models/Monthlybook');
+const MonthlyBook = require('./models/MonthlyBook');
 
 const cron = require('node-cron');
 
