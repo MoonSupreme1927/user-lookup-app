@@ -111,18 +111,18 @@ const Dashboard = () => {
 
       <div className="book-of-month" style={styles.bookMonth}>
         <h2>📘 Book of the Month</h2>
-        <h2>The Vanishing Half</h2>
-        <p>by Brit Bennett</p>
-        <p>📖 A multi-generational family saga about two twin sisters who choose to live in two different worlds.</p>
-        <h2>#NEW YORK BESTSELLER!!</h2>
+        <h2>Heavy</h2>
+        <p>by Kiese Laymon</p>
+        <p>📖 AN AMERICAN MEMOIR</p>
+        {/* <h2>#NEW YORK BESTSELLER!!</h2> */}
         {bookOfTheMonth && (
           <p><strong>{bookOfTheMonth.title}</strong> by {bookOfTheMonth.author}</p>
         )}
         <div style={styles.buttonGroup}>
-          <a href="https://www.amazon.com/dp/0525536299" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.amazon.com/Heavy-American-Memoir-Kiese-Laymon/dp/1501125664" target="_blank" rel="noopener noreferrer">
             <button style={styles.button}>📗 GET HARD COPY</button>
           </a>
-          <a href="https://www.audible.com/pd/0525637141" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.audible.com/pd/Heavy-Audiobook/B07CPGYSFQ" target="_blank" rel="noopener noreferrer">
             <button style={styles.button}>🎧 GET AUDIO BOOK</button>
           </a>
         </div>
