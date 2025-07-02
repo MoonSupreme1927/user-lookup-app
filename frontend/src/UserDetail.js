@@ -91,6 +91,7 @@ const UserDetail = () => {
       <div className="detail-container">
         <div className="header">
           <h1>User Profile</h1>
+          <h2>{user.name}</h2>
           <button className="btn-secondary" onClick={() => navigate('/UserDetail')}>⬅️ Back to Search</button>
         </div>
 
