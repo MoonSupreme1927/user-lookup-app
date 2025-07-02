@@ -27,35 +27,77 @@ mongoose.connect(process.env.MONGO_URI, {
   .catch((err) => console.error('MongoDB connection error:', err));
 
 // 🔐 Signup route
+// 🔐 Signup route
 app.post('/users/signup', async (req, res) => {
   try {
     const { name, email, phone, password } = req.body;
     const lowerEmail = email.toLowerCase();
 
+    // Check if user already exists
     const existingUser = await User.findOne({ email: lowerEmail });
-    if (existingUser) return res.status(409).json({ error: 'User already exists' });
+    if (existingUser) {
+      return res.status(409).json({ error: 'User already exists' });
+    }
 
-    const IPQS_API_KEY = process.env.IPQS_API_KEY;
     const axios = require('axios');
+    const IPQS_API_KEY = process.env.IPQS_API_KEY;
 
-    // 🔍 Validate email and phone BEFORE saving the user
-    const emailCheck = await axios.get(`https://ipqualityscore.com/api/json/email/${IPQS_API_KEY}/${lowerEmail}`);
-    const phoneCheck = await axios.get(`https://ipqualityscore.com/api/json/phone/${IPQS_API_KEY}/${phone}`);
-
-    console.log('IPQS Email Check:', emailCheck.data);
-    console.log('IPQS Phone Check:', phoneCheck.data);
-
-    if (emailCheck.data.valid !== true || emailCheck.data.disposable === true) {
-      return res.status(400).json({ error: 'Invalid or disposable email.' });
+    // 🧼 Format phone (assume US if no +)
+    let formattedPhone = phone;
+    if (!formattedPhone.startsWith('+')) {
+      formattedPhone = '+1' + formattedPhone.replace(/\D/g, '');
     }
 
-    if (phoneCheck.data.valid !== true || phoneCheck.data.active !== true) {
-      return res.status(400).json({ error: 'Invalid or inactive phone number.' });
+    // 🔍 IPQS Email and Phone Validation
+    const [emailCheck, phoneCheck] = await Promise.all([
+      axios.get(`https://ipqualityscore.com/api/json/email/${IPQS_API_KEY}/${lowerEmail}`),
+      axios.get(`https://ipqualityscore.com/api/json/phone/${IPQS_API_KEY}/${formattedPhone}`)
+    ]);
+
+    const emailData = emailCheck.data;
+    const phoneData = phoneCheck.data;
+
+    console.log('📧 IPQS Email Check:', emailData);
+    console.log('📱 IPQS Phone Check:', phoneData);
+
+    // ❌ Reject bad emails
+    if (
+      emailData.valid !== true ||
+      emailData.disposable === true ||
+      emailData.fraud_score >= 75 ||
+      emailData.recent_abuse === true
+    ) {
+      return res.status(400).json({ error: 'Email failed fraud or abuse check.' });
     }
 
+    // ❌ Reject bad phones
+    if (
+      phoneData.valid !== true ||
+      phoneData.active !== true ||
+      phoneData.fraud_score >= 75 ||
+      phoneData.recent_abuse === true
+    ) {
+      return res.status(400).json({ error: 'Phone number failed fraud or abuse check.' });
+    }
+
+    // 🔐 Hash password and save user
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, email: lowerEmail, phone, password: hashedPassword });
+    const newUser = new User({
+      name,
+      email: lowerEmail,
+      phone: formattedPhone,
+      password: hashedPassword
+    });
+
     await newUser.save();
+    res.status(201).json({ message: 'User registered successfully' });
+
+  } catch (error) {
+    console.error('Signup error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+// ✅ BOOKS ROUTES
 
     // ✅ SKILLS ROUTES
 
@@ -114,12 +156,6 @@ app.delete('/skills/:userId/:skill', verifyToken, requireOwner, async (req, res)
 });
 
 
-    res.status(201).json({ message: 'Signup successful!' });
-  } catch (err) {
-    console.error('Signup error:', err.response?.data || err);
-    res.status(500).json({ error: 'Server error during signup' });
-  }
-});
 
 
 // 🔐 Login route
