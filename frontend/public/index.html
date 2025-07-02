@@ -8,5 +8,13 @@
 </head>
 <body>
   <div id="root"></div>
+  <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+  <script>
+    OneSignal.push(function() {
+      OneSignal.init({
+        appId: "YOUR_ONESIGNAL_APP_ID",
+      });
+    });
+  </script>
 </body>
 </html>

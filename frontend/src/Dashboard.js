@@ -8,14 +8,15 @@ import './Dashboard.css';
 import './services/dashboardService';
 import { useNavigate } from 'react-router-dom';
 import { fetchUserById } from './services/userService';
+
 const Dashboard = () => {
   const [books, setBooks] = useState([]);
+  const [bookClubInfo, setBookClubInfo] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-  const isOwner = loggedInUser?._id === id;
   const id = loggedInUser?._id;
-  // Check if the user is logged in and has a valid token
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -29,7 +30,6 @@ const Dashboard = () => {
           setError('User not found.');
           return;
         }
-        // You can set user data in state if needed
       } catch (err) {
         console.error('Failed to fetch user:', err);
         setError('Failed to fetch user data.');
@@ -37,10 +37,6 @@ const Dashboard = () => {
     };
     fetchUser();
   }, [id]);
-
-  0
-  
-  // Fetch books and user data on component mount
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -61,7 +57,17 @@ const Dashboard = () => {
       }
     };
 
+    const fetchBookClubInfo = async () => {
+      try {
+        const { data } = await axios.get('https://user-lookup-app.onrender.com/bookclub/current');
+        setBookClubInfo(data);
+      } catch (err) {
+        console.error('Failed to fetch book club info:', err);
+      }
+    };
+
     fetchBooks();
+    fetchBookClubInfo();
   }, []);
 
   const handleVote = async (bookId) => {
@@ -90,7 +96,6 @@ const Dashboard = () => {
     acc[book.genre] = (acc[book.genre] || 0) + 1;
     return acc;
   }, {});
-  
 
   const booksByGenreData = Object.entries(genreCounts).map(([genre, count]) => ({
     genre,
@@ -100,32 +105,34 @@ const Dashboard = () => {
   if (error) return <p className="error">{error}</p>;
 
   return (
-    
     <div className="dashboard">
-      
       {loggedInUser && (
-  <button className="btn-secondary" onClick={() => navigate(`/users/${loggedInUser._id}`)}>
-    📊 User Profile
-  </button>
-)}
+        <button className="btn-secondary" onClick={() => navigate(`/users/${loggedInUser._id}`)}>
+          📊 User Profile
+        </button>
+      )}
 
       <div className="book-of-month" style={styles.bookMonth}>
         <h2>📘 Book of the Month</h2>
-        <h2>Heavy</h2>
-        <p>by Kiese Laymon</p>
-        <p>📖 AN AMERICAN MEMOIR</p>
-        {/* <h2>#NEW YORK BESTSELLER!!</h2> */}
-        {bookOfTheMonth && (
-          <p><strong>{bookOfTheMonth.title}</strong> by {bookOfTheMonth.author}</p>
+        {bookClubInfo ? (
+          <>
+            <h2>{bookClubInfo.title}</h2>
+            <p>by {bookClubInfo.author}</p>
+            {bookClubInfo.coverImage && (
+              <img src={bookClubInfo.coverImage} alt={bookClubInfo.title} style={{ maxWidth: '200px', marginTop: '1rem' }} />
+            )}
+            {bookClubInfo.currentChapters && (
+              <p>📖 Week {bookClubInfo.currentWeek}: Chapters {bookClubInfo.currentChapters}</p>
+            )}
+            {bookClubInfo.audibleLink && (
+              <a href={bookClubInfo.audibleLink} target="_blank" rel="noopener noreferrer">
+                <button style={styles.button}>🎧 LISTEN ON AUDIBLE</button>
+              </a>
+            )}
+          </>
+        ) : (
+          <p>Loading book club info...</p>
         )}
-        <div style={styles.buttonGroup}>
-          <a href="https://www.amazon.com/Heavy-American-Memoir-Kiese-Laymon/dp/1501125664" target="_blank" rel="noopener noreferrer">
-            <button style={styles.button}>📗 GET HARD COPY</button>
-          </a>
-          <a href="https://www.audible.com/pd/Heavy-Audiobook/B07CPGYSFQ" target="_blank" rel="noopener noreferrer">
-            <button style={styles.button}>🎧 GET AUDIO BOOK</button>
-          </a>
-        </div>
       </div>
 
       <div className="meeting-information" style={styles.meetingInfo}>
@@ -244,5 +251,5 @@ const styles = {
 };
 
 export default Dashboard;
-// Dashboard.js
-// This component fetches and displays book club statistics, including the book of the month and various charts.
+// This code defines a Dashboard component that displays the book of the month, meeting information, club stats, and allows users to vote for the next book. It uses React hooks for state management and Axios for API calls. The dashboard includes charts for visualizing book data and provides links for voting and suggesting books.
+// The styles are defined inline for simplicity, but can be moved to a separate CSS file for better organization and maintainability.

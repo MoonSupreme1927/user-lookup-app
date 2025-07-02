@@ -11,6 +11,10 @@ import ForgotPassword from './ForgotPassword';
 import UserDetail from './UserDetail';
 import ProtectedRoutes from './ProtectedRoutes';
 import AdminDashboard from './AdminDashboard';
+import './styles.css'; // Import your CSS styles
+import './darkMode.css'; // Import dark mode styles
+import AdminBookForm from './AdminBookForm'; // Import the admin book form component
+
 
 
 function App() {
@@ -142,6 +146,11 @@ function App() {
                   setLoading={setLoading} 
                   navigate={navigate}
                 ></AdminDashboard>
+                <AdminBookForm
+                  setError={setError}
+                  setLoading={setLoading}
+                  navigate={navigate}
+                ></AdminBookForm>
                 </ProtectedRoutes>}
         />
       </Routes>
