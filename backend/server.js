@@ -45,7 +45,7 @@ app.post('/users/signup', async (req, res) => {
     console.log('IPQS Email Check:', emailCheck.data);
     console.log('IPQS Phone Check:', phoneCheck.data);
 
-    if (!emailCheck.data.valid !== true || emailCheck.data.disposable !== false) {
+    if (emailCheck.data.valid !== true || emailCheck.data.disposable === true) {
       return res.status(400).json({ error: 'Invalid or disposable email.' });
     }
 
