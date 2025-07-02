@@ -128,6 +128,13 @@ const Dashboard = () => {
         </div>
       </div>
 
+      <div className="meeting-information" style={styles.meetingInfo}>
+        <h3>📅 Meeting Information</h3>
+        <p><strong>When:</strong> Every Thursday</p>
+        <p><strong>Time:</strong> 8PM CST</p>
+        <p><strong>Where:</strong> <a href="https://duo.app.goo.gl/Kx05osnyy13aSQD8fOUqXB" target="_blank" rel="noopener noreferrer">Google Meet</a></p>
+      </div>
+
       <div className="club-stats" style={styles.statsContainer}>
         <h3>📊 Club Stats</h3>
         <div style={styles.statsFlex}>
