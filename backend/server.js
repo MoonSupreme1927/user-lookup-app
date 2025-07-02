@@ -13,6 +13,26 @@ require('dotenv').config();
 const User = require('./models/User');
 const Skill = require('./models/Skill');
 const Book = require('./models/Book');
+const MonthlyBook = require('./models/Monthlybook');
+
+const cron = require('node-cron');
+
+// Runs every Monday at 8am
+cron.schedule('0 8 * * 1', async () => {
+  try {
+    const book = await MonthlyBook.findOne().sort({ startDate: -1 });
+
+    if (book && book.currentWeek < book.chapters.length) {
+      book.currentWeek += 1;
+      book.updatedAt = new Date();
+      await book.save();
+      console.log(`📘 Book of the Month updated to week ${book.currentWeek}`);
+    }
+  } catch (err) {
+    console.error('Weekly chapter update failed:', err);
+  }
+});
+
 
 // Initialize Express app
 const app = express();
@@ -26,7 +46,6 @@ mongoose.connect(process.env.MONGO_URI, {
 }).then(() => console.log('✅ MongoDB connected'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
-// 🔐 Signup route
 // 🔐 Signup route
 app.post('/users/signup', async (req, res) => {
   try {
@@ -306,6 +325,75 @@ app.get('/books', verifyToken, async (req, res) => {
   } catch (err) {
     console.error('Book fetch error:', err);
     res.status(500).json({ error: 'Failed to fetch books' });
+  }
+});
+
+
+// 📘 GET current book and chapter of the week
+app.get('/bookclub/current', async (req, res) => {
+  try {
+    const book = await MonthlyBook.findOne().sort({ startDate: -1 });
+    if (!book) return res.status(404).json({ error: 'No active Book of the Month' });
+    res.json({
+      title: book.title,
+      author: book.author,
+      coverImage: book.coverImage,
+      audibleLink: book.audibleLink,
+      currentWeek: book.currentWeek,
+      currentChapters: book.chapters[book.currentWeek - 1] || null
+    });
+  } catch (err) {
+    console.error('Fetch current book error:', err);
+    res.status(500).json({ error: 'Failed to fetch Book of the Month' });
+  }
+});
+
+// 📘 POST new Book of the Month
+app.post('/bookclub/new', verifyToken, requireAdmin, async (req, res) => {
+  try {
+    const newBook = new MonthlyBook({
+      ...req.body,
+      startDate: new Date(),
+      currentWeek: 0,
+    });
+    await newBook.save();
+    res.status(201).json({ message: 'Book of the Month added!' });
+  } catch (err) {
+    console.error('Add book error:', err);
+    res.status(500).json({ error: 'Failed to add Book of the Month' });
+  }
+});
+
+// ⏰ CRON: Auto-increment week on Mondays 8AM
+cron.schedule('0 8 * * 1', async () => {
+  try {
+    const book = await MonthlyBook.findOne().sort({ startDate: -1 });
+    if (book && book.currentWeek < book.chapters.length) {
+      book.currentWeek += 1;
+      await book.save();
+      console.log(`📘 Advanced to week ${book.currentWeek}`);
+
+      // 📬 Send email updates to all users
+      const users = await User.find();
+      const emails = users.map(u => u.email);
+
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USERNAME,
+          pass: process.env.EMAIL_PASSWORD
+        }
+      });
+
+      await transporter.sendMail({
+        from: process.env.EMAIL_USERNAME,
+        to: emails,
+        subject: `📚 Book Club Week ${book.currentWeek}: ${book.title}`,
+        text: `This week's reading is: ${book.chapters[book.currentWeek - 1]}`
+      });
+    }
+  } catch (err) {
+    console.error('Cron job error:', err);
   }
 });
 
