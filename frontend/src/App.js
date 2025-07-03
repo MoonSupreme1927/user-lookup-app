@@ -11,11 +11,7 @@ import ForgotPassword from './ForgotPassword';
 import UserDetail from './UserDetail';
 import ProtectedRoutes from './ProtectedRoutes';
 import AdminDashboard from './AdminDashboard';
-//import './styles.css'; // Import your CSS styles
-//import './darkMode.css'; // Import dark mode styles
-import AdminBookForm from './AdminBookForm'; // Import the admin book form component
-
-
+import AdminBookForm from './components/AdminBookForm';
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -34,6 +30,10 @@ function App() {
     return () => clearTimeout(delaySearch);
   }, [query]);
 
+  useEffect(() => {
+    document.body.classList.toggle('dark-mode', darkMode);
+  }, [darkMode]);
+
   const searchUsers = async (searchTerm) => {
     setError(null);
     setLoading(true);
@@ -50,6 +50,7 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem('loggedInUser');
+    localStorage.removeItem('token');
     navigate('/login');
   };
 
@@ -57,7 +58,7 @@ function App() {
     <div className={darkMode ? 'app dark-mode' : 'app'}>
       <header className="banner">
         <div className="banner-top">
-        <Link to="/" className="banner-title" style={{ textDecoration: 'none', color: 'inherit' }}>The SHElf Society </Link>
+          <Link to="/" className="banner-title" style={{ textDecoration: 'none', color: 'inherit' }}>The SHElf Society </Link>
           <button className="dark-toggle" onClick={() => setDarkMode(!darkMode)}>
             {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
           </button>
@@ -77,8 +78,7 @@ function App() {
           <button className="btn-secondary" onClick={() => navigate('/signup')}>📝 Sign Up</button>
           <button className="btn-secondary" onClick={() => navigate('/login')}>🔐 Login</button>
           <button className="btn-secondary" onClick={() => navigate('/dashboard')}>📊 Dashboard</button>
-          <button className="btn-secondary" onClick={() => navigate('/admin')}>👑 Admin</button>
-          <button className="btn-secondary" onClick={() => navigate('/home')}>🏠 Home</button>
+          <button className="btn-secondary" onClick={() => navigate('/admin/bookclub')}>🛠️ Admin Panel</button>
           <button className="btn-secondary" onClick={handleLogout}>🚪 Logout</button>
         </div>
       </header>
@@ -99,23 +99,12 @@ function App() {
             />
           }
         />
-        <Route
-          path="/home"
-          element={
-            <LandingPage
-              setError={setError}
-              setLoading={setLoading}
-              navigate={navigate}
-              setQuery={setQuery}
-              setResults={setResults}
-              setNewUser={setNewUser}
-            />
-          }
-        />
+
         <Route
           path="/signup"
           element={<Signup setError={setError} setLoading={setLoading} navigate={navigate} />}
         />
+
         <Route
           path="/login"
           element={
@@ -132,40 +121,56 @@ function App() {
 
         <Route
           path="/dashboard"
-          element={<Dashboard setError={setError} setLoading={setLoading} navigate={navigate} />}
-        />
-        <Route path="/reset-password/:token" 
-        element={<ResetPassword setError={setError} setLoading={setLoading} navigate={navigate} />} />
-
-
-        <Route path="/forgot-password" 
-        element={<ForgotPassword setError={setError} setLoading={setLoading} navigate={navigate} />} />
-
-
-        <Route path="/users/:id" 
-        element={
-        <ProtectedRoutes>
-          <UserDetail 
-          setError={setError} 
-          setLoading={setLoading} 
-          navigate={navigate} 
-         ></UserDetail>
-         </ProtectedRoutes>}
-        />
-         <Route path="/admin"
           element={
             <ProtectedRoutes>
-                  <AdminDashboard
-                  setError={setError} 
-                  setLoading={setLoading} 
-                  navigate={navigate}
-                ></AdminDashboard>
-                <AdminBookForm
-                  setError={setError}
-                  setLoading={setLoading}
-                  navigate={navigate}
-                ></AdminBookForm>
-                </ProtectedRoutes>}
+              <Dashboard setError={setError} setLoading={setLoading} navigate={navigate} />
+            </ProtectedRoutes>
+          }
+        />
+
+        <Route
+          path="/admin/bookclub"
+          element={
+            <ProtectedRoutes>
+              <AdminBookForm />
+            </ProtectedRoutes>
+          }
+        />
+
+        <Route
+          path="/reset-password/:token"
+          element={<ResetPassword setError={setError} setLoading={setLoading} navigate={navigate} />}
+        />
+
+        <Route
+          path="/forgot-password"
+          element={<ForgotPassword setError={setError} setLoading={setLoading} navigate={navigate} />}
+        />
+
+        <Route
+          path="/users/:id"
+          element={
+            <ProtectedRoutes>
+              <UserDetail
+                setError={setError}
+                setLoading={setLoading}
+                navigate={navigate}
+              />
+            </ProtectedRoutes>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoutes>
+              <AdminDashboard
+                setError={setError}
+                setLoading={setLoading}
+                navigate={navigate}
+              />
+            </ProtectedRoutes>
+          }
         />
       </Routes>
     </div>
@@ -173,5 +178,6 @@ function App() {
 }
 
 export default App;
-// and a book club section with a link to join the club.
+// This React application serves as a user management and book club platform.
+// It includes features for user registration, login, and profile management.
 // It also includes a dark mode toggle and a search bar for user queries.

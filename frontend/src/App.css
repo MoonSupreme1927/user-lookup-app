@@ -38,7 +38,6 @@ body {
 
 /* Dark mode toggle button */
 .dark-toggle {
-
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -49,11 +48,24 @@ body {
   color: white;
 }
 
+.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+/* Optional: force body background */
+body.dark-mode {
+  background-color: #121212;
+}
+
 /* App Container */
 .App {
   max-width: 1000px;
   margin: 2rem auto;
   padding: 0 1.5rem;
+  background-color: #ffffff;
+  color: #000000;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .search-form {
