@@ -19,9 +19,13 @@ function App() {
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
   const [newUser, setNewUser] = useState({ name: '', email: '', phone: '' });
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('darkMode') === 'true';
+  });
 
   const navigate = useNavigate();
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+  const isAdmin = loggedInUser?.role === 'admin';
 
   useEffect(() => {
     const delaySearch = setTimeout(() => {
@@ -32,6 +36,7 @@ function App() {
 
   useEffect(() => {
     document.body.classList.toggle('dark-mode', darkMode);
+    localStorage.setItem('darkMode', darkMode);
   }, [darkMode]);
 
   const searchUsers = async (searchTerm) => {
@@ -78,7 +83,9 @@ function App() {
           <button className="btn-secondary" onClick={() => navigate('/signup')}>📝 Sign Up</button>
           <button className="btn-secondary" onClick={() => navigate('/login')}>🔐 Login</button>
           <button className="btn-secondary" onClick={() => navigate('/dashboard')}>📊 Dashboard</button>
-          <button className="btn-secondary" onClick={() => navigate('/admin/bookclub')}>🛠️ Admin</button>
+          {isAdmin && (
+            <button className="btn-secondary" onClick={() => navigate('/admin/bookclub')}>🛠️ Admin Panel</button>
+          )}
           <button className="btn-secondary" onClick={handleLogout}>🚪 Logout</button>
         </div>
       </header>
@@ -132,7 +139,7 @@ function App() {
           path="/admin/bookclub"
           element={
             <ProtectedRoutes>
-              <AdminBookForm />
+              {isAdmin ? <AdminBookForm /> : <div style={{ padding: '2rem' }}><h2>⛔ Access Denied</h2><p>You must be an admin to view this page.</p></div>}
             </ProtectedRoutes>
           }
         />
@@ -178,6 +185,3 @@ function App() {
 }
 
 export default App;
-// This React application serves as a user management and book club platform.
-// It includes features for user registration, login, and profile management.
-// It also includes a dark mode toggle and a search bar for user queries.
