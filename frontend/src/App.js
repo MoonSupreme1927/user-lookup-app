@@ -77,6 +77,8 @@ function App() {
           <button className="btn-secondary" onClick={() => navigate('/signup')}>📝 Sign Up</button>
           <button className="btn-secondary" onClick={() => navigate('/login')}>🔐 Login</button>
           <button className="btn-secondary" onClick={() => navigate('/dashboard')}>📊 Dashboard</button>
+          <button className="btn-secondary" onClick={() => navigate('/admin')}>👑 Admin</button>
+          <button className="btn-secondary" onClick={() => navigate('/home')}>🏠 Home</button>
           <button className="btn-secondary" onClick={handleLogout}>🚪 Logout</button>
         </div>
       </header>
@@ -97,12 +99,24 @@ function App() {
             />
           }
         />
-
+        <Route
+          path="/home"
+          element={
+            <LandingPage
+              setError={setError}
+              setLoading={setLoading}
+              navigate={navigate}
+              setQuery={setQuery}
+              setResults={setResults}
+              setNewUser={setNewUser}
+            />
+          }
+        />
         <Route
           path="/signup"
           element={<Signup setError={setError} setLoading={setLoading} navigate={navigate} />}
         />
-                <Route
+        <Route
           path="/login"
           element={
             <Login
