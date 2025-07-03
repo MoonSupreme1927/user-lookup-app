@@ -2,7 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import './AdminDashboard.css'; // Import your CSS styles
+// This component allows admins to view, search, filter, and manage users.
+// It includes features for promoting users to admin, deleting users, and displaying user statistics.
+import './styles.css'; // Import additional styles if needed
+import './darkMode.css'; // Import dark mode styles if applicable
+import './AdminBookFormm.js'; // Import the admin book form component if needed
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -93,6 +98,10 @@ const AdminDashboard = () => {
         <p><strong>Total Users:</strong> {totalUsers}</p>
         <p><strong>Admins:</strong> {totalAdmins}</p>
         <p><strong>Regular Users:</strong> {totalRegular}</p>
+      </div>
+
+      <div className="actions">
+        <button onClick={() => navigate('/AdminBookForm.js')}>🛠️ Update Book of the Month</button>
       </div>
 
       <input
