@@ -1,13 +1,16 @@
-// src/components/ProtectedRoute.js
+// ProtectedRoutes.js
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoutes = ({ children }) => {
   const token = localStorage.getItem('token');
+  const loggedInUser = localStorage.getItem('loggedInUser');
 
-  return token ? children : <Navigate to="/" replace />;
+  if (!token || !loggedInUser) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
 };
 
-export default ProtectedRoute;
-// This component checks if a user is authenticated by looking for a token in localStorage.
-// If the token exists, it renders the children components; otherwise, it redirects to the home page.
+export default ProtectedRoutes;
